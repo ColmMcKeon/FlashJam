@@ -1586,7 +1586,7 @@ btnInfo.addEventListener('click', () => {
 // ════════════════════════════════════════════════════
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
-  if (e.code === 'Space')      { e.preventDefault(); togglePlay(); }
+  if (e.code === 'Space')      { e.preventDefault(); if (!vidExpOpen) togglePlay(); }
   if (e.code === 'ArrowRight') playNext();
   if (e.code === 'ArrowLeft')  playPrev();
   if (e.code === 'KeyS')       btnShuffle.click();
