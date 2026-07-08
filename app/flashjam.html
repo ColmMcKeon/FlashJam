@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FlashJam</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #111009;
+    --card:     #1b1912;
+    --card2:    #242018;
+    --border:   rgba(200,160,32,0.14);
+    --text:     #f0e2b4;
+    --text-2:   #c0982c;
+    --text-3:   #7a6028;
+    --accent:   #c8a020;
+    --accent2:  #e8c048;
+    --play-bg:  rgba(200,160,32,0.10);
+    --play-bd:  rgba(200,160,32,0.38);
+    --radius:   14px;
+    --rsm:       8px;
+    --titlebar: 38px;
+  }
+
+  html, body { height: 100%; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    background: var(--bg); color: var(--text); user-select: none; }
+
+  #titlebar {
+    height: var(--titlebar);
+    -webkit-app-region: drag;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    font-size: 12px; font-weight: 600; color: var(--text-3); letter-spacing: .05em;
+    flex-shrink: 0;
+  }
+  #titlebar span { pointer-events: none; }
+  #titlebar-clock {
+    position: absolute; right: 14px;
+    font-size: 10px; font-weight: 500; color: var(--text-3); letter-spacing: .03em;
+    pointer-events: none;
+  }
+
+  #app { display: flex; flex-direction: column; height: 100vh; }
+
+  #main {
+    flex: 1; display: flex; gap: 8px;
+    padding: 0 10px 10px; overflow: hidden; min-height: 0;
+  }
+
+  /* ══════ LEFT CARD ══════ */
+  #player-card {
+    width: 220px; flex-shrink: 0;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,.12);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* Art / Visualizer */
+  #art-wrap {
+    position: relative; width: 100%;
+    aspect-ratio: 1; flex-shrink: 0;
+    overflow: hidden;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--card2);
+  }
+
+  #art-placeholder {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    background-color: var(--card2);
+    background-size: 70% 70%; background-position: center; background-repeat: no-repeat;
+    opacity: 0.55;
+    transition: opacity .3s;
+  }
+
+  #viz-canvas {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    width: 100%; height: 60%;
+    pointer-events: none;
+  }
+
+  /* ── Small video (inside art-wrap) ── */
+  #video-wrap {
+    display: none; position: absolute; inset: 0;
+    background: #000; z-index: 5;
+    align-items: center; justify-content: center;
+  }
+  #video-wrap.active { display: flex; }
+  #media-el { max-width: 100%; max-height: 100%; display: block; pointer-events: none; }
+
+  /* Expand button overlay on small video */
+  #vid-expand-btn {
+    display: none;
+    position: absolute; top: 8px; right: 8px; z-index: 20;
+    width: 28px; height: 28px; border-radius: 6px;
+    background: rgba(0,0,0,.5); border: none; cursor: pointer;
+    color: #fff; font-size: 14px;
+    align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  #video-wrap.active #vid-expand-btn { display: flex; }
+  #vid-expand-btn:hover { background: rgba(200,160,32,.7); }
+
+  /* Click-catch layer so whole video area is clickable */
+  #vid-click-catch {
+    display: none; position: absolute; inset: 0; z-index: 15; cursor: pointer;
+  }
+  #video-wrap.active #vid-click-catch { display: block; }
+
+  /* ── Expanded video overlay (covers full #app) ── */
+  #video-expanded {
+    display: none;
+    position: fixed; inset: 0; z-index: 100;
+    background: #000;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: none;
+  }
+  #video-expanded.active { display: flex; }
+  #video-expanded:hover { cursor: default; }
+
+  #video-expanded video {
+    max-width: 100%; max-height: 100%;
+    display: block; pointer-events: none;
+  }
+
+  /* Hover controls bar */
+  #vid-controls {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 20px 18px 14px;
+    background: linear-gradient(to top, rgba(0,0,0,.75) 0%, transparent 100%);
+    display: flex; flex-direction: column; gap: 8px;
+    opacity: 0; transition: opacity .25s;
+    pointer-events: none;
+  }
+  #video-expanded:hover #vid-controls,
+  #vid-controls.visible { opacity: 1; pointer-events: auto; }
+
+  #vid-progress-row { display: flex; align-items: center; gap: 8px; }
+
+  #vid-progress-track {
+    flex: 1; height: 3px; background: rgba(255,255,255,.25);
+    border-radius: 4px; cursor: pointer; position: relative; overflow: hidden;
+  }
+  #vid-progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px; pointer-events: none;
+  }
+  #vid-progress-track:hover { height: 5px; }
+  .vid-time { font-size: 11px; color: rgba(255,255,255,.8); flex-shrink: 0; }
+
+  #vid-btn-row {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #vid-btn-left, #vid-btn-right { display: flex; align-items: center; gap: 6px; }
+
+  .vid-btn {
+    background: none; border: none; cursor: pointer;
+    color: rgba(255,255,255,.85); font-size: 18px;
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; transition: background .15s, color .15s;
+  }
+  .vid-btn:hover { color: #fff; background: rgba(255,255,255,.12); }
+
+  #vid-play-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; cursor: pointer; color: #fff; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.4);
+  }
+
+  #vid-vol-wrap { display: flex; align-items: center; gap: 6px; }
+  #vid-vol-icon { font-size: 14px; color: rgba(255,255,255,.7); cursor: pointer; }
+  #vid-vol-slider {
+    -webkit-appearance: none; width: 70px; height: 3px;
+    border-radius: 4px; background: rgba(255,255,255,.25); outline: none; cursor: pointer;
+  }
+  #vid-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 10px; height: 10px;
+    border-radius: 50%; background: #fff; cursor: pointer;
+  }
+
+  /* Collapse hint top-left */
+  #vid-collapse {
+    position: absolute; top: 10px; left: 14px;
+    font-size: 11px; color: rgba(255,255,255,.5);
+    opacity: 0; transition: opacity .25s; pointer-events: none;
+    letter-spacing: .02em;
+  }
+  #video-expanded:hover #vid-collapse { opacity: 1; }
+
+  /* Meta */
+  #art-meta {
+    padding: 9px 12px 5px; text-align: center; flex-shrink: 0;
+  }
+  #meta-title {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  #meta-artist {
+    font-size: 11px; color: var(--text-2); margin-top: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* Progress */
+  #progress-wrap { padding: 4px 12px 2px; flex-shrink: 0; }
+  #progress-track {
+    width: 100%; height: 3px; background: var(--card2);
+    border-radius: 4px; cursor: pointer; overflow: hidden;
+  }
+  #progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px; pointer-events: none;
+  }
+  #time-row {
+    display: flex; justify-content: space-between;
+    margin-top: 3px; font-size: 10px; color: var(--text-3);
+  }
+
+  /* Crossfade label */
+  #xfade-label { display: flex; align-items: center; gap: 3px; cursor: pointer; flex-shrink: 0; }
+  #xfade-label span { font-size: 9px; color: var(--text-3); letter-spacing: .03em; }
+  #xfade-label input { accent-color: var(--accent); cursor: pointer; width: 11px; height: 11px; }
+
+  /* Mini player */
+  #mini-player {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    height: 64px; background: var(--card); border-top: 1px solid var(--border);
+    align-items: center; gap: 10px; padding: 0 16px;
+    z-index: 3000; -webkit-app-region: drag;
+  }
+  #mini-progress {
+    position: absolute; bottom: 0; left: 0; height: 3px;
+    background: var(--accent); width: 0%; pointer-events: none;
+    transition: width 0.5s linear;
+  }
+  #mini-art {
+    width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0;
+    background: var(--card2) center/cover no-repeat;
+  }
+  #mini-meta { flex: 1; min-width: 0; }
+  #mini-title  { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #mini-artist { font-size: 10px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #mini-play-btn {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; cursor: pointer; color: #111; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-app-region: no-drag;
+  }
+  #mini-player .ctrl-btn { -webkit-app-region: no-drag; }
+  #mini-exit { font-size: 18px !important; }
+
+  /* Play count badge */
+  .track-plays { font-size: 10px; color: var(--text-3); flex-shrink: 0; min-width: 28px; text-align: right; }
+
+  /* Volume */
+  #vol-row {
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 12px 6px; flex-shrink: 0;
+  }
+  .vol-icon { font-size: 11px; color: var(--text-3); }
+  #vol-slider {
+    flex: 1; -webkit-appearance: none; height: 3px;
+    border-radius: 4px; background: var(--card2); outline: none; cursor: pointer;
+  }
+  #vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 10px; height: 10px;
+    border-radius: 50%; background: var(--accent); cursor: pointer;
+  }
+
+  /* Controls */
+  #controls {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 4px 12px 12px; flex-shrink: 0;
+  }
+  .ctrl-btn {
+    background: none; border: none; cursor: pointer; color: var(--text-2);
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; font-size: 14px;
+    transition: color .15s, background .15s;
+  }
+  .ctrl-btn:hover { color: var(--text); background: var(--card2); }
+  .ctrl-btn.active { color: var(--accent); }
+  #btn-shuffle.active { font-size: 20px; }
+
+  #play-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; cursor: pointer; color: #fff; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 14px rgba(200,160,32,.50);
+    transition: transform .1s, box-shadow .1s; flex-shrink: 0;
+  }
+  #play-btn:active { transform: scale(.93); }
+
+  /* ══════ LAUNCH SCREEN ══════ */
+  #launch-screen {
+    position: fixed; inset: 0; z-index: 2000;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  #launch-screen.hidden { display: none; }
+  #launch-logo { font-size: 44px; margin-bottom: 8px; }
+  #launch-title { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: 3px; margin-bottom: 4px; }
+  #launch-subtitle { font-size: 11px; color: var(--text-3); letter-spacing: 2px; margin-bottom: 28px; text-transform: uppercase; }
+  #launch-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px 28px; width: 360px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.10);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  #launch-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  #launch-card-title { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 1.5px; }
+  #launch-cancel-btn {
+    display: none; position: fixed; top: 50px; right: 20px;
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 50%; width: 36px; height: 36px;
+    color: var(--text); font-size: 18px; line-height: 1;
+    cursor: pointer; align-items: center; justify-content: center;
+    z-index: 2001; -webkit-app-region: no-drag;
+  }
+  #launch-cancel-btn:hover { background: var(--play-bg); border-color: var(--play-bd); color: var(--accent); }
+  #launch-list { display: flex; flex-direction: column; gap: 4px; max-height: 180px; overflow-y: auto; }
+  #launch-list::-webkit-scrollbar { width: 3px; }
+  #launch-list::-webkit-scrollbar-thumb { background: var(--card2); border-radius: 4px; }
+  #launch-empty { font-size: 12px; color: var(--text-3); padding: 10px 4px; text-align: center; }
+  .playlist-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--rsm);
+    background: var(--card2); border: 1.5px solid transparent;
+    cursor: pointer; transition: background .12s, border-color .12s;
+    color: var(--text); font-size: 12px;
+  }
+  .playlist-item:hover { background: var(--card2); border-color: var(--border); }
+  .playlist-item.selected { background: var(--play-bg); border-color: var(--play-bd); color: var(--accent); }
+  .playlist-item-icon { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
+  .playlist-item-name { flex: 1; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .playlist-item-meta { font-size: 10px; color: var(--text-3); flex-shrink: 0; }
+  .playlist-del {
+    opacity: 0; background: none; border: none; color: var(--text-3);
+    cursor: pointer; font-size: 12px; padding: 2px 4px; border-radius: 4px;
+    transition: opacity .12s, color .12s; flex-shrink: 0;
+  }
+  .playlist-item:hover .playlist-del { opacity: 1; }
+  .playlist-del:hover { color: #e07040; }
+  #launch-divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+  #launch-new-row { display: flex; gap: 8px; }
+  #launch-new-input {
+    flex: 1; padding: 9px 12px; border-radius: var(--rsm);
+    background: var(--card2); border: 1px solid var(--border);
+    color: var(--text); font-size: 12px; outline: none; font-family: inherit;
+  }
+  #launch-new-input::placeholder { color: var(--text-3); }
+  #launch-new-input:focus { border-color: var(--accent); }
+  #launch-create-btn {
+    padding: 9px 14px; border-radius: var(--rsm);
+    background: var(--play-bg); border: 1px solid var(--play-bd);
+    color: var(--accent); font-size: 12px; cursor: pointer; font-family: inherit; white-space: nowrap;
+    transition: background .15s;
+  }
+  #launch-create-btn:hover { background: rgba(200,160,32,0.22); }
+  #launch-open-btn {
+    width: 100%; padding: 11px; border-radius: var(--rsm);
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; color: #fff; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    box-shadow: 0 3px 12px rgba(200,160,32,0.40); transition: opacity .15s;
+  }
+  #launch-open-btn:disabled { opacity: 0.35; cursor: default; }
+  #launch-open-btn:not(:disabled):hover { opacity: 0.9; }
+  #launch-drop-zone {
+    margin-top: 4px; padding: 14px 12px;
+    border: 1.5px dashed var(--border);
+    border-radius: var(--rsm);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    color: var(--text-3); font-size: 11px; cursor: default;
+    transition: border-color .15s, background .15s;
+  }
+  #launch-drop-zone.drag-over {
+    border-color: var(--accent); background: var(--play-bg); color: var(--accent);
+  }
+  #launch-drop-zone.scanning { color: var(--accent2); border-color: var(--accent2); }
+  #launch-drop-icon { font-size: 16px; }
+
+  /* Info panel */
+  #info-panel {
+    display: none; padding: 6px 12px 10px;
+    border-top: 1px solid var(--border);
+    flex-direction: column; gap: 3px; flex-shrink: 0;
+    max-height: 120px; overflow-y: auto;
+  }
+  #info-panel::-webkit-scrollbar { width: 3px; }
+  #info-panel::-webkit-scrollbar-thumb { background: var(--card2); border-radius: 4px; }
+  #info-panel.open { display: flex; }
+  .info-row { display: flex; gap: 6px; font-size: 10.5px; }
+  .info-key { color: var(--text-3); min-width: 42px; font-weight: 600; flex-shrink: 0; }
+  .info-val { color: var(--text-2); }
+
+  /* ══════ RIGHT CARD ══════ */
+  #queue-card {
+    flex: 1; background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 20px rgba(0,0,0,.12);
+    display: flex; flex-direction: column; overflow: hidden; min-width: 0;
+  }
+
+  #queue-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px 8px; flex-shrink: 0;
+  }
+  #queue-title { font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; }
+  #queue-title:hover { color: var(--accent); }
+  #queue-title-input {
+    font-size: 15px; font-weight: 700; font-family: inherit;
+    background: var(--card2); border: 1px solid var(--play-bd);
+    border-radius: var(--rsm); color: var(--text); padding: 2px 8px;
+    outline: none; min-width: 0; flex: 1;
+  }
+  #queue-title-save {
+    padding: 3px 10px; font-size: 11px; font-weight: 600; font-family: inherit;
+    background: var(--play-bg); border: 1px solid var(--play-bd);
+    border-radius: var(--rsm); color: var(--accent); cursor: pointer;
+  }
+  #queue-actions { display: flex; gap: 2px; }
+  .q-btn {
+    background: none; border: none; cursor: pointer; color: var(--text-3);
+    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+    border-radius: var(--rsm); font-size: 15px;
+    transition: color .15s, background .15s;
+    -webkit-app-region: no-drag;
+  }
+  .q-btn:hover { color: var(--accent); background: var(--play-bg); }
+  .q-btn.active { color: var(--accent); }
+  #search-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px 2px; flex-shrink: 0;
+  }
+  #search-input {
+    flex: 1; background: var(--card2); border: 1px solid var(--play-bd);
+    border-radius: var(--rsm); color: var(--text); font-family: inherit;
+    font-size: 12px; padding: 5px 10px; outline: none;
+  }
+  #search-input::placeholder { color: var(--text-3); }
+  #search-clear {
+    background: none; border: none; color: var(--text-3); cursor: pointer;
+    font-size: 13px; padding: 2px 4px; flex-shrink: 0;
+  }
+  #search-clear:hover { color: var(--accent); }
+
+  /* View tabs */
+  #view-tabs {
+    display: flex; gap: 0; padding: 0 10px 8px; flex-shrink: 0;
+    border-bottom: 1px solid var(--border); margin-bottom: 2px;
+  }
+  .view-tab {
+    flex: 1; padding: 5px 0; border: none;
+    background: none; color: var(--text-3); font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: inherit; letter-spacing: .04em;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: color .12s, border-color .12s;
+  }
+  .view-tab:hover { color: var(--text); }
+  .view-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Sort bar (queue mode only) */
+  .album-header {
+    padding: 8px 12px 4px; font-size: 10px; font-weight: 700;
+    color: var(--accent); text-transform: uppercase; letter-spacing: .08em;
+    border-bottom: 1px solid var(--border); margin: 4px 8px 2px;
+  }
+  #sort-bar {
+    display: flex; gap: 4px; padding: 6px 10px 6px; flex-shrink: 0;
+  }
+  .sort-btn {
+    flex: 1; padding: 4px 0; border: 1px solid var(--border);
+    background: var(--card2); border-radius: var(--rsm);
+    color: var(--text-3); font-size: 10px; font-weight: 600;
+    cursor: pointer; font-family: inherit; letter-spacing: .03em;
+    transition: color .12s, background .12s, border-color .12s;
+  }
+  .sort-btn:hover { color: var(--accent); border-color: var(--play-bd); }
+  .sort-btn.active { background: var(--play-bg); border-color: var(--play-bd); color: var(--accent); }
+  #genre-filter {
+    flex: 1; padding: 4px 4px; border: 1px solid var(--border);
+    background: var(--card2); border-radius: var(--rsm);
+    color: var(--text-3); font-size: 10px; font-weight: 600;
+    cursor: pointer; font-family: inherit; letter-spacing: .03em;
+    appearance: none; -webkit-appearance: none;
+    transition: color .12s, background .12s, border-color .12s;
+  }
+  #genre-filter:hover { color: var(--accent); border-color: var(--play-bd); }
+  #genre-filter.active { background: var(--play-bg); border-color: var(--play-bd); color: var(--accent); }
+
+  /* Browse tree */
+  .br-artist-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 8px; border-radius: var(--rsm); cursor: pointer;
+    transition: background .1s;
+  }
+  .br-artist-row:hover { background: var(--card2); }
+  .br-arrow { font-size: 9px; color: var(--text-3); width: 10px; flex-shrink: 0; transition: transform .15s; }
+  .br-arrow.open { transform: rotate(90deg); }
+  .br-artist-name { font-size: 12px; font-weight: 700; color: var(--text); flex: 1; }
+  .br-artist-count { font-size: 10px; color: var(--text-3); }
+
+  .br-albums { display: none; padding-left: 16px; }
+  .br-albums.open { display: block; }
+
+  .br-album-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px; border-radius: var(--rsm); cursor: pointer;
+    transition: background .1s;
+  }
+  .br-album-row:hover { background: var(--card2); }
+  .br-album-arrow { font-size: 9px; color: var(--text-3); width: 10px; flex-shrink: 0; transition: transform .15s; }
+  .br-album-arrow.open { transform: rotate(90deg); }
+  .br-album-name { font-size: 11px; font-weight: 600; color: var(--text-2); flex: 1; }
+  .br-album-count { font-size: 10px; color: var(--text-3); }
+
+  .br-songs { display: none; padding-left: 18px; }
+  .br-songs.open { display: block; }
+
+  .br-song-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 8px; border-radius: var(--rsm); cursor: pointer;
+    transition: background .1s; border: 1px solid transparent;
+  }
+  .br-song-row:hover { background: var(--card2); }
+  .br-song-row.playing { background: var(--play-bg); border-color: var(--play-bd); }
+  .br-song-num { font-size: 10px; color: var(--text-3); min-width: 18px; text-align: right; flex-shrink: 0; }
+  .br-song-title { font-size: 11px; color: var(--text); flex: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .br-song-row.playing .br-song-title { color: var(--accent); }
+  .br-song-dur { font-size: 10px; color: var(--text-3); flex-shrink: 0; }
+  #browse-loading { padding: 18px; text-align: center; font-size: 11px; color: var(--text-3); }
+
+  #queue-list {
+    flex: 1; overflow-y: auto; padding: 0 6px 8px; position: relative;
+  }
+  #queue-list::-webkit-scrollbar { width: 3px; }
+  #queue-list::-webkit-scrollbar-thumb { background: var(--card2); border-radius: 4px; }
+
+  #tag-loading-banner {
+    display: none; align-items: center; gap: 8px;
+    padding: 6px 10px; margin-bottom: 4px;
+    background: var(--card2); border-radius: 8px;
+    font-size: 11px; color: var(--text-3);
+  }
+  #tag-loading-banner.visible { display: flex; }
+  #tag-loading-spinner {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--border); border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #tag-loading-bar-track {
+    flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  #tag-loading-bar-fill {
+    height: 100%; background: var(--accent); border-radius: 2px;
+    transition: width 0.3s ease; width: 0%;
+  }
+
+  .drop-overlay {
+    position: absolute; inset: 6px; display: none;
+    align-items: center; justify-content: center; flex-direction: column; gap: 6px;
+    background: var(--play-bg); border: 2px dashed var(--accent);
+    border-radius: var(--rsm); z-index: 10; pointer-events: none;
+  }
+  .drop-overlay.active { display: flex; }
+  .drop-overlay-icon { font-size: 24px; }
+  .drop-overlay-text { font-size: 11px; color: var(--accent); font-weight: 600; }
+
+  #empty-hint {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; height: 100%;
+    gap: 6px; color: var(--text-3); font-size: 11px; text-align: center;
+  }
+  #empty-hint .big { font-size: 26px; }
+
+  /* Track row */
+  .track-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 6px; border-radius: var(--rsm); cursor: pointer;
+    transition: background .1s; border: 1px solid transparent;
+  }
+  .track-item:hover { background: var(--card2); }
+  .track-item.playing { background: var(--play-bg); border-color: var(--play-bd); }
+
+  .track-num { width: 16px; text-align: center; font-size: 10px; color: var(--text-3); flex-shrink: 0; }
+  .track-item.playing .track-num, .track-item.paused .track-num { display: none; }
+
+  .mini-bars {
+    display: none; align-items: flex-end; gap: 2px;
+    height: 11px; width: 16px; flex-shrink: 0;
+  }
+  .mini-bars span {
+    display: block; width: 3px; border-radius: 2px; background: var(--accent);
+    animation: mbar .65s ease-in-out infinite alternate;
+  }
+  .mini-bars span:nth-child(2) { animation-delay: .13s; }
+  .mini-bars span:nth-child(3) { animation-delay: .26s; }
+  @keyframes mbar { from { height: 2px; } to { height: 11px; } }
+  .track-item.playing .mini-bars { display: flex; }
+  .track-item.paused  .mini-bars { display: flex; }
+  .track-item.paused  .mini-bars span { animation-play-state: paused; }
+
+  .track-thumb {
+    width: 32px; height: 32px; border-radius: 6px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: rgba(255,255,255,.85);
+  }
+
+  .track-info { flex: 1; min-width: 0; }
+  .track-name {
+    font-size: 12px; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .track-item.playing .track-name { color: var(--accent); }
+  .track-item.tag-loading { opacity: 0.35; pointer-events: none; }
+  .track-sub {
+    font-size: 10px; color: var(--text-2); margin-top: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .track-dur { font-size: 10px; color: var(--text-3); flex-shrink: 0; min-width: 28px; text-align: right; }
+  .track-remove {
+    opacity: 0; background: none; border: none; color: var(--text-3);
+    cursor: pointer; font-size: 11px; padding: 2px 3px; border-radius: 3px;
+    transition: opacity .12s, color .12s; flex-shrink: 0;
+  }
+  .track-item:hover .track-remove { opacity: 1; }
+  .track-remove:hover { color: #e07040; }
+  .track-edit {
+    opacity: 0; background: none; border: none; color: var(--text-3);
+    cursor: pointer; font-size: 11px; padding: 2px 3px; border-radius: 3px;
+    transition: opacity .12s, color .12s; flex-shrink: 0;
+  }
+  .track-item:hover .track-edit { opacity: 1; }
+  .track-edit:hover { color: var(--accent); }
+
+  /* Inline tag editor */
+  .tag-editor {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: var(--rsm); margin: 2px 4px 6px; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .tag-editor-title { font-size: 10px; font-weight: 700; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+  .tag-field { display: flex; align-items: center; gap: 8px; }
+  .tag-label { font-size: 10px; color: var(--text-3); font-weight: 600;
+    min-width: 40px; flex-shrink: 0; }
+  .tag-input {
+    flex: 1; background: var(--card); border: 1px solid var(--border);
+    border-radius: 5px; padding: 4px 8px; color: var(--text);
+    font-size: 11px; font-family: inherit; outline: none;
+    transition: border-color .12s;
+  }
+  .tag-input:focus { border-color: var(--accent); }
+  .tag-input::placeholder { color: var(--text-3); }
+  .tag-editor-btns { display: flex; gap: 6px; justify-content: flex-end; margin-top: 2px; }
+  .tag-btn {
+    padding: 4px 12px; border-radius: 5px; font-size: 11px; font-weight: 600;
+    font-family: inherit; cursor: pointer; border: 1px solid var(--border);
+    transition: background .12s, color .12s;
+  }
+  .tag-btn-save {
+    background: var(--play-bg); border-color: var(--play-bd); color: var(--accent);
+  }
+  .tag-btn-save:hover { background: rgba(200,160,32,0.22); }
+  .tag-btn-cancel { background: none; color: var(--text-3); }
+  .tag-btn-cancel:hover { background: var(--card); color: var(--text); }
+  .tag-btn-save:disabled { opacity: 0.5; cursor: default; }
+  .tag-note { font-size: 9.5px; color: var(--text-3); font-style: italic; }
+</style>
+<script src="./default-art.js"></script>
+</head>
+<body>
+<!-- ── Launch Screen ── -->
+<div id="launch-screen">
+  <div id="launch-logo">🎵</div>
+  <div id="launch-title">FLASHJAM</div>
+  <div id="launch-subtitle">Music &amp; Video Player</div>
+  <button id="launch-cancel-btn" title="Back to player">✕</button>
+  <div id="launch-card">
+    <div id="launch-card-header">
+      <div id="launch-card-title">Select a Playlist</div>
+    </div>
+    <div id="launch-list"><div id="launch-empty">No playlists found — create one below.</div></div>
+    <hr id="launch-divider"/>
+    <div id="launch-new-row">
+      <input type="text" id="launch-new-input" placeholder="New playlist name…"/>
+      <button id="launch-create-btn">+ Create</button>
+    </div>
+    <button id="launch-open-btn" disabled>Open</button>
+    <div id="launch-drop-zone">
+      <span id="launch-drop-icon">📂</span>
+      <span id="launch-drop-text">Drop a folder to load music</span>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="titlebar"><span>FlashJam</span><span id="titlebar-clock"></span></div>
+  <div id="main">
+
+    <!-- LEFT: Player -->
+    <div id="player-card">
+      <div id="art-wrap">
+        <div id="art-placeholder"></div>
+        <canvas id="viz-canvas"></canvas>
+        <div id="video-wrap">
+          <video id="media-el" preload="auto"></video>
+          <div id="vid-click-catch"></div>
+          <button id="vid-expand-btn" title="Expand video">⤢</button>
+        </div>
+      </div>
+
+      <div id="art-meta">
+        <div id="meta-title">No track selected</div>
+        <div id="meta-artist">Add files to get started</div>
+      </div>
+
+      <div id="progress-wrap">
+        <div id="progress-track"><div id="progress-fill"></div></div>
+        <div id="time-row">
+          <span id="time-cur">0:00</span>
+          <span id="time-dur">0:00</span>
+        </div>
+      </div>
+
+      <div id="vol-row">
+        <span class="vol-icon">🔈</span>
+        <input type="range" id="vol-slider" min="0" max="1" step="0.01" value="0.8"/>
+        <span class="vol-icon">🔊</span>
+        <label id="xfade-label" title="Crossfade between tracks">
+          <input type="checkbox" id="crossfade-chk">
+          <span>Fade</span>
+        </label>
+      </div>
+
+      <div id="controls">
+        <button class="ctrl-btn" id="btn-info"    title="Track info (I)">ℹ</button>
+        <button class="ctrl-btn" id="btn-prev"    title="Previous">⏮</button>
+        <button id="play-btn">▶</button>
+        <button class="ctrl-btn" id="btn-next"    title="Next">⏭</button>
+        <button class="ctrl-btn" id="btn-shuffle" title="Shuffle (S)">⇌</button>
+        <button class="ctrl-btn" id="btn-mini"    title="Mini player">⊟</button>
+      </div>
+
+      <div id="info-panel">
+        <div id="info-body"><span style="font-size:10.5px;color:var(--text-3)">No tag data</span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Queue -->
+    <div id="queue-card">
+      <div id="queue-header">
+        <span id="queue-title" title="Click to rename">Play Queue</span>
+        <input id="queue-title-input" type="text" placeholder="Playlist name…" style="display:none">
+        <button id="queue-title-save" style="display:none">Save</button>
+        <div id="queue-actions">
+          <button class="q-btn" id="btn-search" title="Search">⌕</button>
+          <button class="q-btn" id="btn-add"   title="Add files">+</button>
+        </div>
+      </div>
+      <div id="search-bar" style="display:none">
+        <input id="search-input" type="text" placeholder="Search songs, artists, albums…" autocomplete="off">
+        <button id="search-clear">✕</button>
+      </div>
+      <div id="view-tabs">
+        <button class="view-tab active" data-view="queue">Queue</button>
+        <button class="view-tab" data-view="browse">Browse</button>
+      </div>
+      <div id="sort-bar">
+        <button class="sort-btn active" data-sort="name">Song</button>
+        <button class="sort-btn" data-sort="artist">Artist</button>
+        <button class="sort-btn" data-sort="album">Album</button>
+        <button class="sort-btn" data-sort="recent">Played</button>
+        <select id="genre-filter">
+          <option value="">Genre</option>
+        </select>
+      </div>
+      <div id="queue-list">
+        <div id="tag-loading-banner">
+          <div id="tag-loading-spinner"></div>
+          <span id="tag-loading-text">Reading tags…</span>
+          <div id="tag-loading-bar-track"><div id="tag-loading-bar-fill"></div></div>
+        </div>
+        <div class="drop-overlay" id="drop-overlay">
+          <div class="drop-overlay-icon">🎵</div>
+          <div class="drop-overlay-text">Drop to add</div>
+        </div>
+        <div id="empty-hint">
+          <div class="big">🎸</div>
+          <div>Drop files here or click +</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Expanded video overlay ── -->
+<div id="video-expanded">
+  <div id="vid-collapse">Click to collapse · Esc to exit fullscreen</div>
+  <video id="vid-el-expanded" preload="auto"></video>
+  <div id="vid-controls">
+    <div id="vid-progress-row">
+      <span class="vid-time" id="vid-time-cur">0:00</span>
+      <div id="vid-progress-track"><div id="vid-progress-fill"></div></div>
+      <span class="vid-time" id="vid-time-dur">0:00</span>
+    </div>
+    <div id="vid-btn-row">
+      <div id="vid-btn-left">
+        <button class="vid-btn" id="vid-prev-btn" title="Previous">⏮</button>
+        <button id="vid-play-btn">▶</button>
+        <button class="vid-btn" id="vid-next-btn" title="Next">⏭</button>
+      </div>
+      <div id="vid-btn-right">
+        <div id="vid-vol-wrap">
+          <span id="vid-vol-icon">🔊</span>
+          <input type="range" id="vid-vol-slider" min="0" max="1" step="0.01" value="0.8"/>
+        </div>
+        <button class="vid-btn" id="vid-fullscreen-btn" title="Fullscreen">⛶</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mini Player -->
+<div id="mini-player">
+  <div id="mini-progress"></div>
+  <div id="mini-art"></div>
+  <div id="mini-meta">
+    <div id="mini-title">—</div>
+    <div id="mini-artist"></div>
+  </div>
+  <button class="ctrl-btn" id="mini-prev">⏮</button>
+  <button id="mini-play-btn">▶</button>
+  <button class="ctrl-btn" id="mini-next">⏭</button>
+  <button class="ctrl-btn" id="mini-exit" title="Exit mini player">⊞</button>
+</div>
+
+<audio id="xfade-el" preload="auto" style="display:none"></audio>
+
+<script>
+// ════════════════════════════════════════════════════
+//  VISUALIZER
+// ════════════════════════════════════════════════════
+const canvas  = document.getElementById('viz-canvas');
+const ctx2d   = canvas.getContext('2d');
+let audioCtx    = null;
+let analyser    = null;
+let source      = null;
+let mainGain    = null;
+let xfadeElNode = null;
+let xfadeSource = null;
+let xfadeGain   = null;
+let isCrossfading   = false;
+let crossfadeNextIdx = -1;
+let vizActive = false;
+let rafId     = null;
+
+const VIZ_COLORS = ['#c8a020','#d4aa28','#c09018','#d8b030','#c8a820','#b89018','#d4b028','#c09820'];
+function thumbToColor(idx) { return VIZ_COLORS[idx % VIZ_COLORS.length]; }
+
+let vizColor = '#c8a020';
+
+// (peaks not needed for this style)
+const peaks   = [];
+const peakVel = [];
+
+function initAudio(mediaEl) {
+  if (audioCtx) return;
+  audioCtx = new AudioContext();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 128;
+  analyser.smoothingTimeConstant = 0.80;
+  mainGain = audioCtx.createGain();
+  source   = audioCtx.createMediaElementSource(mediaEl);
+  source.connect(mainGain);
+  mainGain.connect(analyser);
+  analyser.connect(audioCtx.destination);
+  xfadeElNode = document.getElementById('xfade-el');
+  xfadeSource = audioCtx.createMediaElementSource(xfadeElNode);
+  xfadeGain   = audioCtx.createGain();
+  xfadeGain.gain.value = 0;
+  xfadeSource.connect(xfadeGain);
+  xfadeGain.connect(audioCtx.destination);
+}
+
+function startViz() {
+  if (!analyser) return;
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  vizActive = true;
+  drawViz();
+}
+
+function stopViz(clear) {
+  vizActive = false;
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  if (clear) ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width  = rect.width  * devicePixelRatio;
+  canvas.height = rect.height * devicePixelRatio;
+  ctx2d.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+}
+
+function drawViz() {
+  if (!vizActive) return;
+  rafId = requestAnimationFrame(drawViz);
+
+  const W   = canvas.width  / devicePixelRatio;
+  const H   = canvas.height / devicePixelRatio;
+  const mid = H / 2;
+
+  ctx2d.clearRect(0, 0, W, H);
+
+  const BAR_COUNT = 40;
+  const GAP       = 2;
+  const barW      = (W - GAP * (BAR_COUNT + 1)) / BAR_COUNT;
+  const radius    = barW / 2;
+  const MAX_HALF  = mid * 0.88;
+
+  const bins = analyser.frequencyBinCount;
+  const data = new Uint8Array(bins);
+  analyser.getByteFrequencyData(data);
+
+  ctx2d.fillStyle = vizColor;
+
+  for (let b = 0; b < BAR_COUNT; b++) {
+    const binStart = Math.floor(b / BAR_COUNT * bins * 0.75);
+    const binEnd   = Math.floor((b + 1) / BAR_COUNT * bins * 0.75);
+    let sum = 0;
+    for (let k = binStart; k < binEnd; k++) sum += data[k];
+    const val  = (sum / Math.max(1, binEnd - binStart)) / 255;
+    const half = Math.max(radius, val * MAX_HALF);
+
+    const x  = GAP + b * (barW + GAP);
+    const y1 = mid - half;
+    const y2 = mid + half;
+    const h  = y2 - y1;
+
+    // Rounded-cap rectangle (pill)
+    ctx2d.beginPath();
+    ctx2d.moveTo(x + radius, y1);
+    ctx2d.lineTo(x + barW - radius, y1);
+    ctx2d.arcTo(x + barW, y1, x + barW, y1 + radius, radius);
+    ctx2d.lineTo(x + barW, y2 - radius);
+    ctx2d.arcTo(x + barW, y2, x + barW - radius, y2, radius);
+    ctx2d.lineTo(x + radius, y2);
+    ctx2d.arcTo(x, y2, x, y2 - radius, radius);
+    ctx2d.lineTo(x, y1 + radius);
+    ctx2d.arcTo(x, y1, x + radius, y1, radius);
+    ctx2d.closePath();
+    ctx2d.fill();
+  }
+}
+
+// Observe art-wrap resize to keep canvas crisp
+const ro = new ResizeObserver(() => {
+  resizeCanvas();
+  if (!vizActive) ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+});
+ro.observe(document.getElementById('art-wrap'));
+
+// ════════════════════════════════════════════════════
+//  THUMB PALETTES
+// ════════════════════════════════════════════════════
+const THUMBS = [
+  'linear-gradient(135deg,#2a2418,#1e1c12)',
+  'linear-gradient(135deg,#221e14,#2e2610)',
+  'linear-gradient(135deg,#26200e,#1e1a10)',
+  'linear-gradient(135deg,#1e1c10,#2a2016)',
+  'linear-gradient(135deg,#241e10,#201c12)',
+  'linear-gradient(135deg,#28220e,#1c1a10)',
+  'linear-gradient(135deg,#201e12,#2c2414)',
+  'linear-gradient(135deg,#1c1a0e,#262018)',
+];
+
+// ════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════
+const state = { playlist: [], currentIdx: -1, isPlaying: false, shuffle: false, volume: 0.8, sortBy: 'name', filterGenre: '', searchQuery: '', viewMode: 'queue', crossfade: false, miniMode: false };
+
+// ════════════════════════════════════════════════════
+//  DOM REFS
+// ════════════════════════════════════════════════════
+const mediaEl       = document.getElementById('media-el');
+const videoWrap     = document.getElementById('video-wrap');
+const artPlaceholder= document.getElementById('art-placeholder');
+const metaTitle     = document.getElementById('meta-title');
+const metaArtist    = document.getElementById('meta-artist');
+const playBtn       = document.getElementById('play-btn');
+const btnPrev       = document.getElementById('btn-prev');
+const btnNext       = document.getElementById('btn-next');
+const btnShuffle    = document.getElementById('btn-shuffle');
+const btnAdd        = document.getElementById('btn-add');
+const btnInfo       = document.getElementById('btn-info');
+const queueList     = document.getElementById('queue-list');
+const emptyHint     = document.getElementById('empty-hint');
+const dropOverlay   = document.getElementById('drop-overlay');
+const progressTrack = document.getElementById('progress-track');
+const progressFill  = document.getElementById('progress-fill');
+const timeCur       = document.getElementById('time-cur');
+const timeDur       = document.getElementById('time-dur');
+const volSlider     = document.getElementById('vol-slider');
+const infoPanel     = document.getElementById('info-panel');
+const infoBody      = document.getElementById('info-body');
+
+// ════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════
+const fmtTime  = s => isFinite(s) && !isNaN(s) ? `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}` : '0:00';
+const extOf    = p => (p.split('.').pop() || '').toLowerCase();
+const isVideo  = e => ['mp4','mov','webm','m4v'].includes(e);
+const nameOf   = p => (p.split('/').pop() || p).replace(/\.[^/.]+$/,'');
+const thumbClr = i => THUMBS[i % THUMBS.length];
+
+// ════════════════════════════════════════════════════
+//  RENDER QUEUE
+// ════════════════════════════════════════════════════
+function sortedIndices() {
+  let indices = state.playlist.map((_, i) => i);
+  if (state.filterGenre) {
+    const fg = state.filterGenre.toLowerCase();
+    indices = indices.filter(i => {
+      const g = (state.playlist[i].tags?.genre || '').toLowerCase();
+      return g.split(/[,;\/]/).some(s => s.trim().includes(fg));
+    });
+  }
+  if (state.searchQuery) {
+    const sq = state.searchQuery.toLowerCase();
+    indices = indices.filter(i => {
+      const t = state.playlist[i];
+      return (t.tags?.title || nameOf(t.path)).toLowerCase().includes(sq)
+          || (t.tags?.artist || '').toLowerCase().includes(sq)
+          || (t.tags?.album  || '').toLowerCase().includes(sq);
+    });
+  }
+  const key = state.sortBy;
+  return indices.sort((a, b) => {
+    const ta = state.playlist[a], tb = state.playlist[b];
+    let va, vb;
+    if (key === 'name')   { va = ta.tags?.title  || nameOf(ta.path).replace(/^\d+[\s._-]+/,''); vb = tb.tags?.title  || nameOf(tb.path).replace(/^\d+[\s._-]+/,''); }
+    if (key === 'artist') { va = ta.tags?.artist || nameOf(ta.path); vb = tb.tags?.artist || nameOf(tb.path); }
+    if (key === 'album')  {
+      // Sort albums chronologically (year), then alphabetically within same year
+      const ya = parseInt(ta.tags?.year) || 9999, yb = parseInt(tb.tags?.year) || 9999;
+      const aa = ta.tags?.album || nameOf(ta.path), ab = tb.tags?.album || nameOf(tb.path);
+      if (ya !== yb) return ya - yb;
+      const ac = aa.localeCompare(ab, undefined, { sensitivity: 'base' });
+      if (ac !== 0) return ac;
+      // Within same album: sort by track number
+      const tna = parseInt(ta.tags?.track) || 999, tnb = parseInt(tb.tags?.track) || 999;
+      return tna - tnb;
+    }
+    if (key === 'recent') { return (tb.lastPlayed || 0) - (ta.lastPlayed || 0); }
+    if (key === 'genre')  { va = ta.tags?.genre  || ta.ext.toUpperCase(); vb = tb.tags?.genre  || tb.ext.toUpperCase(); }
+    if (va === undefined) return 0;
+    return va.localeCompare(vb, undefined, { sensitivity: 'base' });
+  });
+}
+
+function renderQueue() {
+  document.querySelectorAll('.track-item, .album-header, .br-artist, .browse-loading-msg').forEach(el => el.remove());
+  emptyHint.style.display = state.playlist.length ? 'none' : 'flex';
+
+  let lastAlbumKey = null;
+  sortedIndices().forEach((i, displayPos) => {
+    const t    = state.playlist[i];
+
+    if (state.sortBy === 'album') {
+      const albumKey = (t.tags?.album || '') + '||' + (t.tags?.year || '');
+      if (albumKey !== lastAlbumKey) {
+        lastAlbumKey = albumKey;
+        const hdr = document.createElement('div');
+        hdr.className = 'album-header';
+        const albumName = t.tags?.album || 'Unknown Album';
+        const year = t.tags?.year ? ` · ${t.tags.year}` : '';
+        hdr.textContent = `${albumName}${year}`;
+        queueList.appendChild(hdr);
+      }
+    }
+
+    const item = document.createElement('div');
+    item.className = 'track-item' + (i === state.currentIdx ? (state.isPlaying ? ' playing' : ' paused') : '') + (!t.tags ? ' tag-loading' : '');
+    item.dataset.index = i;
+    const name = t.tags?.title  || nameOf(t.path);
+    const sub  = t.tags?.artist || t.ext.toUpperCase();
+    const dur  = t.tags?.duration ? fmtTime(t.tags.duration) : '';
+    const icon = isVideo(t.ext) ? '🎬' : '🎵';
+
+    item.innerHTML = `
+      <div class="track-num">${displayPos + 1}</div>
+      <div class="mini-bars"><span></span><span></span><span></span></div>
+      <div class="track-thumb" style="background:${thumbClr(i)}">${icon}</div>
+      <div class="track-info">
+        <div class="track-name">${name}</div>
+        <div class="track-sub">${sub}</div>
+      </div>
+      <div class="track-dur">${dur}</div>
+      <div class="track-plays">${t.playCount > 0 ? t.playCount + '▶' : ''}</div>
+      <button class="track-edit" data-index="${i}" title="Edit tags">✎</button>
+      <button class="track-remove" data-index="${i}">✕</button>`;
+
+    item.addEventListener('click', e => {
+      if (!e.target.classList.contains('track-remove') && !e.target.classList.contains('track-edit')) playTrack(i);
+    });
+    item.querySelector('.track-remove').addEventListener('click', e => { e.stopPropagation(); removeTrack(i); });
+    item.querySelector('.track-edit').addEventListener('click', e => { e.stopPropagation(); openTagEditor(i, item); });
+    queueList.appendChild(item);
+  });
+}
+
+// ════════════════════════════════════════════════════
+//  INLINE TAG EDITOR
+// ════════════════════════════════════════════════════
+let activeEditorEl = null;
+
+function closeTagEditor() {
+  if (activeEditorEl) { activeEditorEl.remove(); activeEditorEl = null; }
+}
+
+function openTagEditor(idx, trackItemEl) {
+  // Toggle off if already open for this track
+  if (activeEditorEl && activeEditorEl.dataset.forIdx === String(idx)) {
+    closeTagEditor(); return;
+  }
+  closeTagEditor();
+
+  const track = state.playlist[idx];
+  const tags  = track.tags || {};
+  const isMp3 = track.ext === 'mp3';
+
+  const editor = document.createElement('div');
+  editor.className = 'tag-editor';
+  editor.dataset.forIdx = idx;
+
+  const fields = [
+    { key: 'title',  label: 'Title',  val: tags.title  || nameOf(track.path) },
+    { key: 'artist', label: 'Artist', val: tags.artist || '' },
+    { key: 'album',  label: 'Album',  val: tags.album  || '' },
+    { key: 'genre',  label: 'Genre',  val: tags.genre  || '' },
+    { key: 'year',   label: 'Year',   val: tags.year   || '' },
+    { key: 'track',  label: 'Track#', val: tags.track  || '' },
+  ];
+
+  editor.innerHTML = `<div class="tag-editor-title">Edit Tags — ${nameOf(track.path)}</div>
+    ${fields.map(f => `<div class="tag-field">
+      <span class="tag-label">${f.label}</span>
+      <input class="tag-input" data-key="${f.key}" value="${(f.val||'').replace(/"/g,'&quot;')}" placeholder="${f.label}"/>
+    </div>`).join('')}
+    ${isMp3 ? `<div class="tag-field">
+      <span class="tag-label">Art</span>
+      <button class="tag-btn tag-btn-cancel" id="tag-art-btn" style="flex:1;text-align:left;padding:4px 8px">Choose image…</button>
+    </div>` : `<div class="tag-note">⚠ Tag writing only supported for MP3 files — changes apply in-app only.</div>`}
+    <div class="tag-editor-btns">
+      <button class="tag-btn tag-btn-cancel">Cancel</button>
+      <button class="tag-btn tag-btn-save">Save</button>
+    </div>`;
+
+  trackItemEl.insertAdjacentElement('afterend', editor);
+  activeEditorEl = editor;
+  editor.querySelector('.tag-input').focus();
+
+  editor.querySelector('.tag-btn-cancel').addEventListener('click', closeTagEditor);
+
+  // Art picker
+  let selectedArtPath = null;
+  const artBtn = editor.querySelector('#tag-art-btn');
+  if (artBtn) {
+    artBtn.addEventListener('click', async () => {
+      const imgPath = await window.electronAPI.openImageDialog();
+      if (imgPath) {
+        selectedArtPath = imgPath;
+        artBtn.textContent = imgPath.split('/').pop();
+        artBtn.style.color = 'var(--accent)';
+      }
+    });
+  }
+
+  editor.querySelector('.tag-btn-save').addEventListener('click', async () => {
+    const saveBtn = editor.querySelector('.tag-btn-save');
+    saveBtn.disabled = true; saveBtn.textContent = 'Saving…';
+
+    const updated = {};
+    editor.querySelectorAll('.tag-input').forEach(inp => { updated[inp.dataset.key] = inp.value.trim(); });
+
+    // Update in-memory tags
+    track.tags = {
+      title:    updated.title  || nameOf(track.path),
+      artist:   updated.artist || track.ext.toUpperCase(),
+      album:    updated.album  || null,
+      genre:    updated.genre  || null,
+      year:     updated.year   || null,
+      track:    updated.track  || null,
+      duration: tags.duration  || null,
+    };
+
+    // Write tags + art to file if MP3
+    if (isMp3) {
+      const ok = await window.electronAPI.writeTags(track.path, updated);
+      if (!ok) { saveBtn.textContent = 'Error'; saveBtn.disabled = false; return; }
+      if (selectedArtPath) {
+        await window.electronAPI.writeArt(track.path, selectedArtPath);
+        // Show the new art immediately if this is the playing track
+        if (state.currentIdx === idx) {
+          const dataUrl = await window.electronAPI.readArt(track.path);
+          setArtDisplay(dataUrl);
+        }
+      }
+    }
+
+    // Update player display if this is the current track
+    if (idx === state.currentIdx) {
+      metaTitle.textContent  = track.tags.title;
+      metaArtist.textContent = track.tags.artist;
+    }
+
+    closeTagEditor();
+    renderView(); saveData();
+  });
+}
+
+function renderView() {
+  if (state.viewMode === 'browse') renderBrowse(); else renderQueue();
+}
+
+function scrollToPlaying() {
+  queueList.querySelector(`.track-item[data-index="${state.currentIdx}"]`)?.scrollIntoView({ block: 'nearest' });
+}
+
+// ════════════════════════════════════════════════════
+//  TAGS
+// ════════════════════════════════════════════════════
+let currentTags = null;
+
+async function loadAndApplyTags(track) {
+  currentTags = await window.electronAPI.readTags(track.path);
+  const title  = currentTags?.title  || nameOf(track.path);
+  const artist = currentTags?.artist || track.ext.toUpperCase();
+  metaTitle.textContent  = title;
+  metaArtist.textContent = artist;
+  track.tags = currentTags ? { title, artist, album: currentTags.album || null, genre: currentTags.genre || null, duration: currentTags.duration } : null;
+  renderView();
+  if (infoPanel.classList.contains('open')) renderInfoPanel();
+
+  // Load album art
+  const dataUrl = await window.electronAPI.readArt(track.path);
+  setArtDisplay(dataUrl);
+}
+
+function setArtDisplay(dataUrl) {
+  if (dataUrl) {
+    artPlaceholder.style.backgroundImage = `url('${dataUrl}')`;
+    artPlaceholder.style.backgroundSize = 'cover';
+    artPlaceholder.style.opacity = '1';
+  } else {
+    artPlaceholder.style.backgroundImage = window.DEFAULT_ART ? `url('${window.DEFAULT_ART}')` : '';
+    artPlaceholder.style.backgroundSize = '70% 70%';
+    artPlaceholder.style.opacity = '0.55';
+  }
+}
+
+function renderInfoPanel() {
+  infoBody.innerHTML = '';
+  const rows = [['Title',currentTags?.title],['Artist',currentTags?.artist],
+    ['Album',currentTags?.album],['Genre',currentTags?.genre],
+    ['Track',currentTags?.track],['Year',currentTags?.year]].filter(([,v])=>v);
+  if (!rows.length) { infoBody.innerHTML = '<span style="font-size:10.5px;color:var(--text-3)">No tag data</span>'; return; }
+  rows.forEach(([k,v]) => {
+    const r = document.createElement('div'); r.className = 'info-row';
+    r.innerHTML = `<span class="info-key">${k}</span><span class="info-val">${v}</span>`;
+    infoBody.appendChild(r);
+  });
+}
+
+// ════════════════════════════════════════════════════
+//  PLAYBACK
+// ════════════════════════════════════════════════════
+function playTrack(idx) {
+  if (idx < 0 || idx >= state.playlist.length) return;
+  // Cancel any in-progress crossfade
+  if (isCrossfading) {
+    isCrossfading = false; crossfadeNextIdx = -1;
+    if (xfadeElNode) { xfadeElNode.pause(); xfadeElNode.src = ''; }
+    if (mainGain)  { mainGain.gain.cancelScheduledValues(audioCtx.currentTime);  mainGain.gain.value  = 1; }
+    if (xfadeGain) { xfadeGain.gain.cancelScheduledValues(audioCtx.currentTime); xfadeGain.gain.value = 0; }
+  }
+  // Track play stats
+  state.playlist[idx].playCount  = (state.playlist[idx].playCount  || 0) + 1;
+  state.playlist[idx].lastPlayed = Date.now();
+  state.currentIdx = idx;
+  const t = state.playlist[idx];
+  const vid = isVideo(t.ext);
+
+  currentTags = null;
+  vizColor = thumbToColor(idx);
+  metaTitle.textContent  = nameOf(t.path);
+  metaArtist.textContent = t.ext.toUpperCase();
+
+  videoWrap.classList.toggle('active', vid);
+  artPlaceholder.style.display = vid ? 'none' : 'flex';
+  if (!vid) setArtDisplay(null);
+  if (vid) stopViz(true);
+
+  initAudio(mediaEl);
+  mediaEl.src    = `file://${t.path}`;
+  mediaEl.volume = state.volume;
+  mediaEl.play().then(() => {
+    state.isPlaying = true;
+    if (!vid) startViz();
+    updatePlayBtn(); renderView(); scrollToPlaying(); saveData();
+  }).catch(console.error);
+
+  loadAndApplyTags(t);
+}
+
+function togglePlay() {
+  if (state.currentIdx === -1) { if (state.playlist.length) playTrack(0); return; }
+  if (mediaEl.paused) {
+    if (audioCtx?.state === 'suspended') audioCtx.resume();
+    mediaEl.play();
+  } else { mediaEl.pause(); }
+}
+
+function playNext() {
+  if (!state.playlist.length) return;
+  if (state.shuffle) { playTrack(Math.floor(Math.random() * state.playlist.length)); return; }
+  const order = sortedIndices();
+  const pos = order.indexOf(state.currentIdx);
+  playTrack(order[(pos + 1) % order.length]);
+}
+
+function playPrev() {
+  if (!state.playlist.length) return;
+  if (mediaEl.currentTime > 3) { mediaEl.currentTime = 0; return; }
+  if (state.shuffle) { playTrack(Math.floor(Math.random() * state.playlist.length)); return; }
+  const order = sortedIndices();
+  const pos = order.indexOf(state.currentIdx);
+  playTrack(order[(pos - 1 + order.length) % order.length]);
+}
+
+function updatePlayBtn() { playBtn.textContent = state.isPlaying ? '⏸' : '▶'; updateMiniPlayer(); }
+
+// ════════════════════════════════════════════════════
+//  PLAYLIST MANAGEMENT
+// ════════════════════════════════════════════════════
+let tagLoadTimer = null;
+function updateGenreFilter() {
+  const sel = document.getElementById('genre-filter');
+  const prev = sel.value;
+  const genres = new Set();
+  for (const t of state.playlist) {
+    if (!t.tags?.genre) continue;
+    t.tags.genre.split(/[,;\/]/).forEach(g => { const s = g.trim(); if (s) genres.add(s); });
+  }
+  sel.innerHTML = '<option value="">Genre</option>';
+  [...genres].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+    .forEach(g => { const o = document.createElement('option'); o.value = g; o.textContent = g; sel.appendChild(o); });
+  if (prev && [...genres].some(g => g === prev)) sel.value = prev;
+  sel.classList.toggle('active', !!sel.value);
+}
+
+async function backgroundLoadTags() {
+  const banner  = document.getElementById('tag-loading-banner');
+  const bannerTxt = document.getElementById('tag-loading-text');
+  const barFill = document.getElementById('tag-loading-bar-fill');
+  const toLoad  = state.playlist.filter(t => !t.tags);
+  if (!toLoad.length) return;
+  banner.classList.add('visible');
+  let done = 0;
+  for (const track of state.playlist) {
+    if (track.tags) continue;
+    try {
+      const meta = await window.electronAPI.readTags(track.path);
+      if (!meta) { done++; continue; }
+      const title  = meta.title  || nameOf(track.path);
+      const artist = meta.artist || track.ext.toUpperCase();
+      track.tags = { title, artist, album: meta.album || null, genre: meta.genre || null, duration: meta.duration || null, track: meta.track || null, year: meta.year || null };
+      if (state.viewMode === 'browse') renderBrowse(); else renderQueue();
+    } catch {}
+    done++;
+    const pct = Math.round((done / toLoad.length) * 100);
+    bannerTxt.textContent = `Reading tags… ${done} / ${toLoad.length}`;
+    barFill.style.width = `${pct}%`;
+  }
+  banner.classList.remove('visible');
+  updateGenreFilter();
+  saveData();
+}
+
+function addFiles(paths) {
+  const EXT = /\.(mp3|mp4|wav|ogg|m4a|flac|aac|webm|mov|m4v)$/i;
+  let added = false;
+  paths.forEach(fp => {
+    if (!EXT.test(fp) || state.playlist.some(t => t.path === fp)) return;
+    state.playlist.push({ name: nameOf(fp), path: fp, ext: extOf(fp), tags: null, playCount: 0, lastPlayed: null });
+    added = true;
+  });
+  if (added) {
+    renderView(); saveData();
+    clearTimeout(tagLoadTimer);
+    tagLoadTimer = setTimeout(backgroundLoadTags, 300);
+  }
+}
+
+function removeTrack(idx) {
+  if (idx === state.currentIdx) {
+    mediaEl.pause(); mediaEl.src = '';
+    state.isPlaying = false; state.currentIdx = -1;
+    stopViz(true); updatePlayBtn();
+    metaTitle.textContent = 'No track selected'; metaArtist.textContent = '';
+    progressFill.style.width = '0%'; timeCur.textContent = '0:00'; timeDur.textContent = '0:00';
+  } else if (idx < state.currentIdx) state.currentIdx--;
+  state.playlist.splice(idx, 1);
+  renderView(); saveData();
+}
+
+function clearPlaylist() {
+  mediaEl.pause(); mediaEl.src = '';
+  Object.assign(state, { playlist: [], currentIdx: -1, isPlaying: false });
+  stopViz(true); updatePlayBtn();
+  metaTitle.textContent = 'No track selected'; metaArtist.textContent = 'Add files to get started';
+  progressFill.style.width = '0%'; timeCur.textContent = '0:00'; timeDur.textContent = '0:00';
+  videoWrap.classList.remove('active'); setArtDisplay(null);
+  renderView(); saveData();
+}
+
+// ════════════════════════════════════════════════════
+//  MEDIA EVENTS
+// ════════════════════════════════════════════════════
+const miniProgressBar = document.getElementById('mini-progress');
+mediaEl.addEventListener('timeupdate', () => {
+  if (!isFinite(mediaEl.duration)) return;
+  const pct = `${(mediaEl.currentTime / mediaEl.duration) * 100}%`;
+  progressFill.style.width = pct;
+  if (state.miniMode) miniProgressBar.style.width = pct;
+  timeCur.textContent = fmtTime(mediaEl.currentTime);
+  timeDur.textContent = fmtTime(mediaEl.duration);
+  if (state.crossfade && !isCrossfading && mainGain && state.playlist.length > 1) {
+    const remaining = mediaEl.duration - mediaEl.currentTime;
+    if (remaining > 0 && remaining <= 5) startCrossfade(remaining);
+  }
+});
+mediaEl.addEventListener('ended', () => { if (isCrossfading) completeCrossfade(); else playNext(); });
+mediaEl.addEventListener('pause', () => {
+  state.isPlaying = false; stopViz(false); updatePlayBtn(); renderView();
+});
+mediaEl.addEventListener('play', () => {
+  state.isPlaying = true;
+  if (state.currentIdx >= 0 && !isVideo(state.playlist[state.currentIdx]?.ext)) startViz();
+  updatePlayBtn(); renderView();
+});
+
+progressTrack.addEventListener('click', e => {
+  const r = progressTrack.getBoundingClientRect();
+  if (isFinite(mediaEl.duration)) mediaEl.currentTime = ((e.clientX - r.left) / r.width) * mediaEl.duration;
+});
+
+// ════════════════════════════════════════════════════
+//  CROSSFADE
+// ════════════════════════════════════════════════════
+function startCrossfade(fadeDuration) {
+  if (isCrossfading) return;
+  isCrossfading = true;
+  crossfadeNextIdx = state.shuffle
+    ? Math.floor(Math.random() * state.playlist.length)
+    : (state.currentIdx + 1) % state.playlist.length;
+  const nextTrack = state.playlist[crossfadeNextIdx];
+  xfadeElNode.src    = `file://${nextTrack.path}`;
+  xfadeElNode.volume = state.volume;
+  xfadeElNode.play().catch(() => {});
+  const now = audioCtx.currentTime;
+  mainGain.gain.cancelScheduledValues(now);
+  mainGain.gain.setValueAtTime(1, now);
+  mainGain.gain.linearRampToValueAtTime(0, now + fadeDuration);
+  xfadeGain.gain.cancelScheduledValues(now);
+  xfadeGain.gain.setValueAtTime(0, now);
+  xfadeGain.gain.linearRampToValueAtTime(1, now + fadeDuration);
+}
+
+function completeCrossfade() {
+  isCrossfading = false;
+  if (mainGain)  { mainGain.gain.cancelScheduledValues(audioCtx.currentTime);  mainGain.gain.value  = 1; }
+  if (xfadeGain) { xfadeGain.gain.cancelScheduledValues(audioCtx.currentTime); xfadeGain.gain.value = 0; }
+  const idx = crossfadeNextIdx; crossfadeNextIdx = -1;
+  if (idx < 0 || idx >= state.playlist.length) return;
+  state.playlist[idx].playCount  = (state.playlist[idx].playCount  || 0) + 1;
+  state.playlist[idx].lastPlayed = Date.now();
+  state.currentIdx = idx; state.isPlaying = true;
+  vizColor = thumbToColor(idx);
+  const savedTime = xfadeElNode.currentTime;
+  xfadeElNode.pause(); xfadeElNode.src = '';
+  const t = state.playlist[idx];
+  mediaEl.src = `file://${t.path}`;
+  mediaEl.volume = state.volume;
+  mediaEl.addEventListener('canplay', () => { mediaEl.currentTime = savedTime; }, { once: true });
+  mediaEl.play().catch(console.error);
+  loadAndApplyTags(t);
+  updatePlayBtn(); renderView(); scrollToPlaying(); saveData();
+}
+
+const crossfadeChk = document.getElementById('crossfade-chk');
+crossfadeChk.addEventListener('change', () => { state.crossfade = crossfadeChk.checked; saveData(); });
+
+// ════════════════════════════════════════════════════
+//  MINI PLAYER
+// ════════════════════════════════════════════════════
+const miniPlayerEl = document.getElementById('mini-player');
+const miniPlayBtn  = document.getElementById('mini-play-btn');
+
+function updateMiniPlayer() {
+  if (!state.miniMode) return;
+  document.getElementById('mini-title').textContent  = metaTitle.textContent  || '—';
+  document.getElementById('mini-artist').textContent = metaArtist.textContent || '';
+  miniPlayBtn.textContent = state.isPlaying ? '⏸' : '▶';
+  document.getElementById('mini-art').style.backgroundImage = artPlaceholder.style.backgroundImage || '';
+}
+
+async function enterMiniMode() {
+  state.miniMode = true;
+  document.getElementById('titlebar').style.display = 'none';
+  document.getElementById('main').style.display = 'none';
+  miniPlayerEl.style.display = 'flex';
+  await window.electronAPI.setMiniMode(true);
+  updateMiniPlayer();
+}
+
+async function exitMiniMode() {
+  state.miniMode = false;
+  miniPlayerEl.style.display = 'none';
+  document.getElementById('main').style.display = 'flex';
+  document.getElementById('titlebar').style.display = '';
+  await window.electronAPI.setMiniMode(false);
+}
+
+document.getElementById('btn-mini').addEventListener('click', enterMiniMode);
+document.getElementById('mini-exit').addEventListener('click', exitMiniMode);
+document.getElementById('mini-prev').addEventListener('click', playPrev);
+document.getElementById('mini-next').addEventListener('click', playNext);
+miniPlayBtn.addEventListener('click', togglePlay);
+volSlider.addEventListener('input', () => {
+  state.volume = parseFloat(volSlider.value);
+  mediaEl.volume = state.volume;
+  if (isCrossfading && xfadeElNode) xfadeElNode.volume = state.volume;
+  saveData();
+});
+
+// ════════════════════════════════════════════════════
+//  CONTROLS
+// ════════════════════════════════════════════════════
+playBtn.addEventListener('click', togglePlay);
+btnNext.addEventListener('click', playNext);
+btnPrev.addEventListener('click', playPrev);
+function updateShuffleBtn() {
+  btnShuffle.classList.toggle('active', state.shuffle);
+  btnShuffle.textContent = state.shuffle ? '⤬' : '⇌';
+}
+btnShuffle.addEventListener('click', () => {
+  state.shuffle = !state.shuffle; updateShuffleBtn(); saveData();
+});
+btnAdd.addEventListener('click', async () => addFiles(await window.electronAPI.openFileDialog()));
+btnInfo.addEventListener('click', () => {
+  const open = infoPanel.classList.toggle('open'); btnInfo.classList.toggle('active', open);
+  if (open) renderInfoPanel();
+});
+
+// ════════════════════════════════════════════════════
+//  KEYBOARD
+// ════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space')      { e.preventDefault(); togglePlay(); }
+  if (e.code === 'ArrowRight') playNext();
+  if (e.code === 'ArrowLeft')  playPrev();
+  if (e.code === 'KeyS')       btnShuffle.click();
+  if (e.code === 'KeyI')       btnInfo.click();
+});
+
+// ════════════════════════════════════════════════════
+//  DRAG & DROP
+// ════════════════════════════════════════════════════
+async function handleDrop(e) {
+  e.preventDefault();
+  dropOverlay.classList.remove('active');
+  const paths = [...e.dataTransfer.files].map(f => f.path);
+  const resolved = await window.electronAPI.scanPaths(paths);
+  addFiles(resolved);
+}
+queueList.addEventListener('dragover',  e => { e.preventDefault(); dropOverlay.classList.add('active'); });
+queueList.addEventListener('dragleave', e => { if (!queueList.contains(e.relatedTarget)) dropOverlay.classList.remove('active'); });
+queueList.addEventListener('drop',      handleDrop);
+document.getElementById('player-card').addEventListener('dragover', e => e.preventDefault());
+document.getElementById('player-card').addEventListener('drop',     handleDrop);
+
+// ════════════════════════════════════════════════════
+//  PERSISTENCE
+// ════════════════════════════════════════════════════
+function saveData() {
+  window.electronAPI.saveData({
+    playlist: state.playlist.map(({name,path,ext,playCount,lastPlayed}) => ({name,path,ext,playCount:playCount||0,lastPlayed:lastPlayed||null})),
+    currentIdx: state.currentIdx, volume: state.volume, shuffle: state.shuffle,
+    crossfade: state.crossfade, playlistName: currentPlaylist?.name,
+  });
+}
+
+async function loadData() {
+  const saved = await window.electronAPI.loadData();
+  if (!saved) return;
+  state.volume = saved.volume ?? 0.8; state.shuffle = saved.shuffle ?? false;
+  volSlider.value = state.volume; mediaEl.volume = state.volume;
+  btnShuffle.classList.toggle('active', state.shuffle);
+  if (Array.isArray(saved.playlist) && saved.playlist.length) {
+    const ok = await Promise.all(saved.playlist.map(t => window.electronAPI.fileExists(t.path)));
+    state.playlist = saved.playlist.filter((_,i) => ok[i]);
+    renderQueue();
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  EXPANDED VIDEO
+// ════════════════════════════════════════════════════
+const vidExpanded     = document.getElementById('video-expanded');
+const vidElExpanded   = document.getElementById('vid-el-expanded');
+const vidPlayBtn      = document.getElementById('vid-play-btn');
+const vidPrevBtn      = document.getElementById('vid-prev-btn');
+const vidNextBtn      = document.getElementById('vid-next-btn');
+const vidFullscreenBtn= document.getElementById('vid-fullscreen-btn');
+const vidProgressTrack= document.getElementById('vid-progress-track');
+const vidProgressFill = document.getElementById('vid-progress-fill');
+const vidTimeCur      = document.getElementById('vid-time-cur');
+const vidTimeDur      = document.getElementById('vid-time-dur');
+const vidVolSlider    = document.getElementById('vid-vol-slider');
+const vidControls     = document.getElementById('vid-controls');
+
+let vidExpOpen = false;
+let cursorTimer = null;
+
+function openExpandedVideo() {
+  if (!state.playlist[state.currentIdx]) return;
+  vidExpOpen = true;
+  // Mirror current playback position & volume
+  vidElExpanded.src    = mediaEl.src;
+  vidElExpanded.volume = mediaEl.volume;
+  vidVolSlider.value   = mediaEl.volume;
+  vidElExpanded.currentTime = mediaEl.currentTime;
+  // Pause small player, play expanded
+  mediaEl.pause();
+  vidElExpanded.play().catch(()=>{});
+  vidExpanded.classList.add('active');
+  updateVidPlayBtn();
+}
+
+function closeExpandedVideo() {
+  if (!vidExpOpen) return;
+  vidExpOpen = false;
+  // Mirror position back to main player
+  mediaEl.src    = vidElExpanded.src;
+  mediaEl.volume = vidElExpanded.volume;
+  mediaEl.currentTime = vidElExpanded.currentTime;
+  vidElExpanded.pause();
+  vidExpanded.classList.remove('active');
+  if (document.fullscreenElement) document.exitFullscreen();
+  mediaEl.play().catch(()=>{});
+  updatePlayBtn();
+}
+
+function updateVidPlayBtn() {
+  vidPlayBtn.textContent = vidElExpanded.paused ? '▶' : '⏸';
+}
+
+// Click small video → expand (via transparent catch layer and expand button)
+document.getElementById('vid-click-catch').addEventListener('click', openExpandedVideo);
+document.getElementById('vid-expand-btn').addEventListener('click', e => { e.stopPropagation(); openExpandedVideo(); });
+
+// Click expanded video background → collapse (but not controls)
+vidExpanded.addEventListener('click', e => {
+  if (e.target === vidExpanded || e.target === vidElExpanded) closeExpandedVideo();
+});
+
+// Expanded video events
+vidElExpanded.addEventListener('timeupdate', () => {
+  if (!isFinite(vidElExpanded.duration)) return;
+  const pct = (vidElExpanded.currentTime / vidElExpanded.duration) * 100;
+  vidProgressFill.style.width = `${pct}%`;
+  vidTimeCur.textContent = fmtTime(vidElExpanded.currentTime);
+  vidTimeDur.textContent = fmtTime(vidElExpanded.duration);
+  // Keep main progress in sync
+  progressFill.style.width = `${pct}%`;
+  timeCur.textContent = fmtTime(vidElExpanded.currentTime);
+  timeDur.textContent = fmtTime(vidElExpanded.duration);
+});
+vidElExpanded.addEventListener('play',  updateVidPlayBtn);
+vidElExpanded.addEventListener('pause', updateVidPlayBtn);
+vidElExpanded.addEventListener('ended', () => { closeExpandedVideo(); playNext(); });
+
+// Expanded controls
+vidPlayBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  vidElExpanded.paused ? vidElExpanded.play() : vidElExpanded.pause();
+});
+vidPrevBtn.addEventListener('click', e => { e.stopPropagation(); closeExpandedVideo(); playPrev(); });
+vidNextBtn.addEventListener('click', e => { e.stopPropagation(); closeExpandedVideo(); playNext(); });
+
+vidProgressTrack.addEventListener('click', e => {
+  e.stopPropagation();
+  const r = vidProgressTrack.getBoundingClientRect();
+  if (isFinite(vidElExpanded.duration))
+    vidElExpanded.currentTime = ((e.clientX - r.left) / r.width) * vidElExpanded.duration;
+});
+
+vidVolSlider.addEventListener('input', e => {
+  e.stopPropagation();
+  vidElExpanded.volume = parseFloat(vidVolSlider.value);
+  mediaEl.volume = vidElExpanded.volume;
+  state.volume = vidElExpanded.volume;
+  volSlider.value = state.volume;
+});
+
+// Fullscreen
+vidFullscreenBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  if (!document.fullscreenElement) {
+    vidExpanded.requestFullscreen().catch(()=>{});
+    vidFullscreenBtn.textContent = '⊠';
+  } else {
+    document.exitFullscreen();
+    vidFullscreenBtn.textContent = '⛶';
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) vidFullscreenBtn.textContent = '⛶';
+});
+
+// Auto-hide cursor & controls after 2.5s of no mouse movement
+vidExpanded.addEventListener('mousemove', () => {
+  vidControls.classList.add('visible');
+  vidExpanded.style.cursor = 'default';
+  clearTimeout(cursorTimer);
+  cursorTimer = setTimeout(() => {
+    vidControls.classList.remove('visible');
+    vidExpanded.style.cursor = 'none';
+  }, 2500);
+});
+
+// Escape collapses expanded (if not fullscreen)
+document.addEventListener('keydown', e => {
+  if (e.code === 'Escape' && vidExpOpen && !document.fullscreenElement) closeExpandedVideo();
+  if (e.code === 'Space' && vidExpOpen) { e.preventDefault(); vidPlayBtn.click(); }
+});
+
+// ════════════════════════════════════════════════════
+//  LAUNCH SCREEN
+// ════════════════════════════════════════════════════
+const launchScreen  = document.getElementById('launch-screen');
+const launchList    = document.getElementById('launch-list');
+const launchEmpty   = document.getElementById('launch-empty');
+const launchNewInput= document.getElementById('launch-new-input');
+const launchCreateBtn=document.getElementById('launch-create-btn');
+const launchOpenBtn = document.getElementById('launch-open-btn');
+document.getElementById('launch-cancel-btn').addEventListener('click', () => launchScreen.classList.add('hidden'));
+
+let selectedPlaylist = null; // { name, filename }
+let currentPlaylist  = null; // { name, filename } — currently open
+
+function fmtDate(ms) {
+  const d = new Date(ms);
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+async function showLauncher() {
+  launchScreen.classList.remove('hidden');
+  selectedPlaylist = null;
+  launchOpenBtn.disabled = true;
+  launchNewInput.value = '';
+  document.getElementById('launch-cancel-btn').style.display = (state.playlist.length > 0) ? 'flex' : 'none';
+  await refreshPlaylistList();
+}
+
+async function refreshPlaylistList() {
+  const playlists = await window.electronAPI.listPlaylists();
+  launchList.innerHTML = '';
+
+  if (!playlists.length) {
+    launchList.innerHTML = '<div id="launch-empty">No playlists found — create one below.</div>';
+    return;
+  }
+
+  playlists.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'playlist-item';
+    item.dataset.filename = p.filename;
+    item.innerHTML = `
+      <span class="playlist-item-icon">🎵</span>
+      <span class="playlist-item-name">${p.name}</span>
+      <span class="playlist-item-meta">${fmtDate(p.modified)}</span>
+      <button class="playlist-del" data-filename="${p.filename}" title="Delete">✕</button>
+    `;
+
+    item.addEventListener('click', e => {
+      if (e.target.classList.contains('playlist-del')) return;
+      openPlaylist(p);
+    });
+
+    item.querySelector('.playlist-del').addEventListener('click', async e => {
+      e.stopPropagation();
+      if (!confirm(`Delete "${p.name}"?`)) return;
+      await window.electronAPI.deletePlaylist(p.filename);
+      if (selectedPlaylist?.filename === p.filename) {
+        selectedPlaylist = null;
+        launchOpenBtn.disabled = true;
+      }
+      await refreshPlaylistList();
+    });
+
+    launchList.appendChild(item);
+  });
+}
+
+async function openPlaylist(p) {
+  const saved = await window.electronAPI.loadPlaylist(p.filename);
+  launchScreen.classList.add('hidden');
+  const displayName = saved?.playlistName || p.name;
+  currentPlaylist = { ...p, name: displayName };
+  document.getElementById('queue-title').textContent = displayName;
+  // Always reset state when switching playlists
+  mediaEl.pause(); mediaEl.src = '';
+  state.playlist = []; state.currentIdx = -1; state.isPlaying = false;
+  stopViz(true); updatePlayBtn(); setArtDisplay(null);
+  if (saved) {
+    state.volume  = saved.volume  ?? 0.8;
+    state.shuffle = saved.shuffle ?? false;
+    volSlider.value = state.volume;
+    mediaEl.volume  = state.volume;
+    updateShuffleBtn();
+    state.crossfade = saved.crossfade ?? false;
+    crossfadeChk.checked = state.crossfade;
+    if (Array.isArray(saved.playlist) && saved.playlist.length) {
+      const ok = await Promise.all(saved.playlist.map(t => window.electronAPI.fileExists(t.path)));
+      state.playlist = saved.playlist.filter((_, i) => ok[i]);
+    }
+  }
+  renderQueue();
+  clearTimeout(tagLoadTimer);
+  tagLoadTimer = setTimeout(backgroundLoadTags, 300);
+}
+
+launchOpenBtn.addEventListener('click', () => {
+  if (selectedPlaylist) openPlaylist(selectedPlaylist);
+});
+
+launchCreateBtn.addEventListener('click', async () => {
+  const name = launchNewInput.value.trim();
+  if (!name) { launchNewInput.focus(); return; }
+  const filename = await window.electronAPI.createPlaylist(name);
+  if (filename) openPlaylist({ name, filename });
+});
+
+// ════════════════════════════════════════════════════
+//  VIEW TABS
+// ════════════════════════════════════════════════════
+const sortBar = document.getElementById('sort-bar');
+
+document.querySelectorAll('.view-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    state.viewMode = tab.dataset.view;
+    document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t === tab));
+    sortBar.style.display = state.viewMode === 'queue' ? 'flex' : 'none';
+    if (state.viewMode === 'queue') { renderQueue(); scrollToPlaying(); }
+    else renderBrowse();
+  });
+});
+
+// ════════════════════════════════════════════════════
+//  BROWSE VIEW
+// ════════════════════════════════════════════════════
+function buildTree() {
+  const tree = {}; // artist → album → [{idx, track}]
+  state.playlist.forEach((t, idx) => {
+    const artist = t.tags?.artist || 'Unknown Artist';
+    const album  = t.tags?.album  || 'Unknown Album';
+    if (!tree[artist]) tree[artist] = {};
+    if (!tree[artist][album]) tree[artist][album] = [];
+    tree[artist][album].push({ idx, track: t });
+  });
+  return tree;
+}
+
+function renderBrowse() {
+  document.querySelectorAll('.track-item, .album-header').forEach(el => el.remove());
+  emptyHint.style.display = state.playlist.length ? 'none' : 'flex';
+
+  const existing = queueList.querySelectorAll('.br-artist,.browse-loading-msg');
+  existing.forEach(el => el.remove());
+
+  if (!state.playlist.length) return;
+
+  const untagged = state.playlist.filter(t => !t.tags).length;
+  if (untagged > 0) {
+    const msg = document.createElement('div');
+    msg.className = 'browse-loading-msg';
+    msg.id = 'browse-loading';
+    msg.textContent = `Loading tags… (${state.playlist.length - untagged}/${state.playlist.length})`;
+    queueList.insertBefore(msg, queueList.querySelector('#empty-hint').nextSibling);
+  } else {
+    const old = queueList.querySelector('#browse-loading');
+    if (old) old.remove();
+  }
+
+  const tree = buildTree();
+  const artists = Object.keys(tree).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+  artists.forEach(artist => {
+    const albums = tree[artist];
+    const totalSongs = Object.values(albums).reduce((s, a) => s + a.length, 0);
+
+    const artistEl = document.createElement('div');
+    artistEl.className = 'br-artist';
+
+    const artistRow = document.createElement('div');
+    artistRow.className = 'br-artist-row';
+    artistRow.innerHTML = `<span class="br-arrow">▶</span>
+      <span class="br-artist-name">${artist}</span>
+      <span class="br-artist-count">${totalSongs} song${totalSongs !== 1 ? 's' : ''}</span>`;
+
+    const albumsEl = document.createElement('div');
+    albumsEl.className = 'br-albums';
+
+    const albumNames = Object.keys(albums).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    albumNames.forEach(album => {
+      const songs = albums[album];
+
+      const albumEl = document.createElement('div');
+      albumEl.className = 'br-album';
+
+      const albumRow = document.createElement('div');
+      albumRow.className = 'br-album-row';
+      albumRow.innerHTML = `<span class="br-album-arrow">▶</span>
+        <span class="br-album-name">${album}</span>
+        <span class="br-album-count">${songs.length}</span>`;
+
+      const songsEl = document.createElement('div');
+      songsEl.className = 'br-songs';
+
+      songs.forEach(({ idx, track }, pos) => {
+        const trackNum = track.tags?.track ? parseInt(track.tags.track) : pos + 1;
+        const title    = track.tags?.title || nameOf(track.path);
+        const dur      = track.tags?.duration ? fmtTime(track.tags.duration) : '';
+        const isPlaying = idx === state.currentIdx;
+
+        const songRow = document.createElement('div');
+        songRow.className = 'br-song-row' + (isPlaying ? ' playing' : '');
+        songRow.dataset.index = idx;
+        songRow.innerHTML = `<span class="br-song-num">${trackNum}</span>
+          <span class="br-song-title">${title}</span>
+          <span class="br-song-dur">${dur}</span>`;
+        songRow.addEventListener('click', () => playTrack(idx));
+        songsEl.appendChild(songRow);
+      });
+
+      albumRow.addEventListener('click', () => {
+        const open = songsEl.classList.toggle('open');
+        albumRow.querySelector('.br-album-arrow').classList.toggle('open', open);
+      });
+
+      albumEl.appendChild(albumRow);
+      albumEl.appendChild(songsEl);
+      albumsEl.appendChild(albumEl);
+    });
+
+    artistRow.addEventListener('click', () => {
+      const open = albumsEl.classList.toggle('open');
+      artistRow.querySelector('.br-arrow').classList.toggle('open', open);
+    });
+
+    artistEl.appendChild(artistRow);
+    artistEl.appendChild(albumsEl);
+    queueList.appendChild(artistEl);
+  });
+}
+
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.sortBy = btn.dataset.sort;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b === btn));
+    renderQueue();
+    scrollToPlaying();
+  });
+});
+
+document.getElementById('genre-filter').addEventListener('change', e => {
+  state.filterGenre = e.target.value;
+  e.target.classList.toggle('active', !!e.target.value);
+  renderView();
+  scrollToPlaying();
+});
+
+launchNewInput.addEventListener('keydown', e => {
+  if (e.code === 'Enter') launchCreateBtn.click();
+});
+
+// ── Inline playlist rename ──
+const queueTitle     = document.getElementById('queue-title');
+const queueTitleInput= document.getElementById('queue-title-input');
+const queueTitleSave = document.getElementById('queue-title-save');
+
+function enterRenameMode() {
+  queueTitleInput.value = currentPlaylist?.name || queueTitle.textContent;
+  queueTitle.style.display = 'none';
+  queueTitleInput.style.display = '';
+  queueTitleSave.style.display = '';
+  queueTitleInput.focus();
+  queueTitleInput.select();
+}
+
+async function commitRename() {
+  const name = queueTitleInput.value.trim();
+  if (name && currentPlaylist) {
+    const newFilename = await window.electronAPI.renamePlaylist(currentPlaylist.filename, name);
+    if (newFilename) {
+      currentPlaylist.filename = newFilename;
+      currentPlaylist.name = name;
+    }
+    queueTitle.textContent = currentPlaylist.name;
+    saveData();
+  }
+  queueTitleInput.style.display = 'none';
+  queueTitleSave.style.display = 'none';
+  queueTitle.style.display = '';
+}
+
+queueTitle.addEventListener('click', enterRenameMode);
+queueTitleSave.addEventListener('click', commitRename);
+queueTitleInput.addEventListener('keydown', e => {
+  if (e.code === 'Enter') commitRename();
+  if (e.code === 'Escape') {
+    queueTitleInput.style.display = 'none';
+    queueTitleSave.style.display = 'none';
+    queueTitle.style.display = '';
+  }
+});
+let pendingPlaylistName = '';
+launchNewInput.addEventListener('input', () => { pendingPlaylistName = launchNewInput.value.trim(); });
+
+// Launch screen folder drop
+const launchDropZone = document.getElementById('launch-drop-zone');
+const launchDropText = document.getElementById('launch-drop-text');
+
+launchDropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  launchDropZone.classList.add('drag-over');
+  launchDropText.textContent = 'Drop to scan folder';
+});
+launchDropZone.addEventListener('dragleave', () => {
+  launchDropZone.classList.remove('drag-over');
+  launchDropText.textContent = 'Drop a folder to load music';
+});
+launchDropZone.addEventListener('drop', async e => {
+  e.preventDefault();
+  launchDropZone.classList.remove('drag-over');
+  const paths = [...e.dataTransfer.files].map(f => f.path);
+  if (!paths.length) return;
+
+  launchDropZone.classList.add('scanning');
+  launchDropText.textContent = 'Scanning…';
+
+  const found = await window.electronAPI.scanPaths(paths);
+
+  launchDropZone.classList.remove('scanning');
+  launchDropText.textContent = 'Drop a folder to load music';
+
+  if (!found.length) { launchDropText.textContent = 'No music found in that folder'; return; }
+
+  // Use selected playlist, typed name, or folder name as fallback
+  let target = selectedPlaylist;
+  if (!target) {
+    const name = pendingPlaylistName || launchNewInput.value.trim() || paths[0].split('/').pop() || 'Dropped';
+    pendingPlaylistName = '';
+    const filename = await window.electronAPI.createPlaylist(name);
+    if (!filename) return;
+    target = { name, filename };
+  }
+
+  await openPlaylist(target);
+  addFiles(found);
+});
+
+// "Change Playlist" button wired to queue header (added below)
+document.getElementById('btn-add').insertAdjacentHTML('afterend',
+  '<button class="q-btn" id="btn-switch" title="Switch playlist">⇆</button>'
+);
+document.getElementById('btn-switch').addEventListener('click', showLauncher);
+
+const searchBar   = document.getElementById('search-bar');
+const searchInput = document.getElementById('search-input');
+const btnSearch   = document.getElementById('btn-search');
+
+document.getElementById('btn-search').addEventListener('click', () => {
+  const open = searchBar.style.display === 'none';
+  searchBar.style.display = open ? 'flex' : 'none';
+  btnSearch.classList.toggle('active', open);
+  if (open) { searchInput.focus(); }
+  else { state.searchQuery = ''; searchInput.value = ''; renderView(); }
+});
+
+searchInput.addEventListener('input', () => {
+  state.searchQuery = searchInput.value.trim();
+  renderView();
+});
+
+document.getElementById('search-clear').addEventListener('click', () => {
+  state.searchQuery = ''; searchInput.value = '';
+  searchBar.style.display = 'none';
+  btnSearch.classList.remove('active');
+  renderView();
+});
+
+// ════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════
+// Clock
+(function tickClock() {
+  const el = document.getElementById('titlebar-clock');
+  const now = new Date();
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const dd = String(now.getDate()).padStart(2,'0');
+  const yy = now.getFullYear();
+  let h = now.getHours(), ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  const min = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = `${mm}-${dd}-${yy} at ${h}:${min} ${ampm}`;
+  setTimeout(tickClock, (60 - now.getSeconds()) * 1000);
+})();
+
+if (window.DEFAULT_ART) {
+  artPlaceholder.style.backgroundImage = `url('${window.DEFAULT_ART}')`;
+}
+
+window.electronAPI.onMediaKey(key => {
+  if (key === 'play-pause') togglePlay();
+  else if (key === 'next') playNext();
+  else if (key === 'prev') playPrev();
+});
+
+resizeCanvas();
+updatePlayBtn();
+renderQueue();
+showLauncher();
+</script>
+</body>
+</html>

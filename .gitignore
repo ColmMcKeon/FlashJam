@@ -1,0 +1,17 @@
+# Build output
+app/FlashJam-darwin-arm64/
+FlashJam.app/
+
+# Dependencies
+app/node_modules/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Personal playlist data
+data/
+
+# Test media
+TestMedia/
+TestMovies/

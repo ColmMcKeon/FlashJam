@@ -1,0 +1,122 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Symbol 136" itemID="6a3daa00-0000006d" lastModified="1782426084">
+     <timeline>
+          <DOMTimeline name="Symbol 136">
+               <layers>
+                    <DOMLayer name="Script Layer" color="#79ee23">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script>theslider2.onPress = function()
+{
+   theslider2.startDrag(false,0,-4.1,52,-4.1);
+   this.onEnterFrame = function()
+   {
+      PanResult = theslider2._x / 52 * 100;
+      PanResult = Math.ceil(PanResult);
+      if(PanResult &lt; 49)
+      {
+         PanResult = PanResult / 49 * 100 - 100;
+      }
+      else if(PanResult &gt; 51)
+      {
+         PanResult = PanResult / 49 * 100 - 100;
+      }
+      else
+      {
+         PanResult = 0;
+      }
+      _parent.MP3Sound.setPan(PanResult);
+      panINf = _parent.MP3Sound.getPan();
+   };
+};
+theslider2.onRelease = function()
+{
+   theslider2.stopDrag();
+   delete this.onEnterFrame;
+};
+panINf = 0;
+theslider2.onRollOver = function()
+{
+   _root.ToolTip("Balance",172,48);
+};
+theslider2.onRollOut = function()
+{
+   _root.Cancel();
+};
+</script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 2" color="#c2f906">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 112" name="theslider2" centerPoint3DX="30.2" centerPoint3DY="2.6">
+                                             <matrix>
+                                                  <Matrix tx="25.25" ty="-2.7"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 3" color="#84a9f2">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 135" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="58.35" ty="2.2" a="-0.05000000074505806" d="-0.05000000074505806"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 4" color="#4dc3b8">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 135" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="-0.3" ty="0.2" a="0.05000000074505806" d="0.05000000074505806"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 5" color="#e0f6d4" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMShape isFloating="true">
+                                             <fills>
+                                                  <FillStyle index="1">
+                                                       <SolidColor color="#c2dcb4"/>
+                                                  </FillStyle>
+                                             </fills>
+                                             <strokes/>
+                                             <edges>
+                                                  <Edge fillStyle0="0" fillStyle1="1" strokeStyle="0" edges="! 581 73| 581 79| 578 76| 581 73"/>
+                                             </edges>
+                                        </DOMShape>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timeline>
+</DOMSymbolItem>

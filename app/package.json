@@ -1,0 +1,18 @@
+{
+  "name": "flashjam",
+  "version": "1.0.0",
+  "description": "FlashJam — modern music & video player",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . FlashJam --platform=darwin --overwrite --icon=icon.icns --asar && rm -rf ../FlashJam.app && cp -R FlashJam-darwin-arm64/FlashJam.app ../FlashJam.app && rm -rf /Applications/FlashJam.app && cp -R FlashJam-darwin-arm64/FlashJam.app /Applications/FlashJam.app"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "music-metadata": "^11.13.0",
+    "node-id3": "^0.2.9"
+  }
+}

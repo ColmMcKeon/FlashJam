@@ -1,0 +1,933 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" currentTimeline="1" xflVersion="2.2" creatorInfo="" platform="Windows" versionInfo="Saved by " majorVersion="" buildNumber="" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true" backgroundColor="#ffffff" frameRate="30" width="254.2" height="172.8">
+     <fonts>
+          <DOMFontItem name="Font 87" itemID="6a3daa00-00000001" font="Arial" size="0" id="1" embedRanges="" embeddedCharacters=" 3EIPSTUafimnoprt"/>
+     </fonts>
+     <symbols>
+          <Include href="Symbol 1.xml" itemID="6a3daa00-00000002" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 2.xml" itemID="6a3daa00-00000003" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 3.xml" itemID="6a3daa00-00000004" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 5.xml" itemID="6a3daa00-00000005" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 6.xml" itemID="6a3daa00-00000006" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 7.xml" itemID="6a3daa00-00000007" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 8.xml" itemID="6a3daa00-00000008" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 9.xml" itemID="6a3daa00-00000009" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 10.xml" itemID="6a3daa00-0000000a" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 11.xml" itemID="6a3daa00-0000000b" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 12.xml" itemID="6a3daa00-0000000c" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 13.xml" itemID="6a3daa00-0000000d" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 14.xml" itemID="6a3daa00-0000000e" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 15.xml" itemID="6a3daa00-0000000f" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 16.xml" itemID="6a3daa00-00000010" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 17.xml" itemID="6a3daa00-00000011" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 18.xml" itemID="6a3daa00-00000012" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 19.xml" itemID="6a3daa00-00000013" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 20.xml" itemID="6a3daa00-00000014" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 21.xml" itemID="6a3daa00-00000015" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 23.xml" itemID="6a3daa00-00000016" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 24.xml" itemID="6a3daa00-00000017" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 25.xml" itemID="6a3daa00-00000018" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 26.xml" itemID="6a3daa00-00000019" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 27.xml" itemID="6a3daa00-0000001a" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 28.xml" itemID="6a3daa00-0000001b" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 29.xml" itemID="6a3daa00-0000001c" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 30.xml" itemID="6a3daa00-0000001d" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 32.xml" itemID="6a3daa00-0000001e" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 33.xml" itemID="6a3daa00-0000001f" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 34.xml" itemID="6a3daa00-00000020" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 36.xml" itemID="6a3daa00-00000021" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 37.xml" itemID="6a3daa00-00000022" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 38.xml" itemID="6a3daa00-00000023" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 39.xml" itemID="6a3daa00-00000024" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 40.xml" itemID="6a3daa00-00000025" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 41.xml" itemID="6a3daa00-00000026" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 42.xml" itemID="6a3daa00-00000027" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 43.xml" itemID="6a3daa00-00000028" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 45.xml" itemID="6a3daa00-00000029" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 46.xml" itemID="6a3daa00-0000002a" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 47.xml" itemID="6a3daa00-0000002b" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 48.xml" itemID="6a3daa00-0000002c" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 49.xml" itemID="6a3daa00-0000002d" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 51.xml" itemID="6a3daa00-0000002e" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 52.xml" itemID="6a3daa00-0000002f" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 53.xml" itemID="6a3daa00-00000030" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 54.xml" itemID="6a3daa00-00000031" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 55.xml" itemID="6a3daa00-00000032" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 57.xml" itemID="6a3daa00-00000033" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 58.xml" itemID="6a3daa00-00000034" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 59.xml" itemID="6a3daa00-00000035" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 60.xml" itemID="6a3daa00-00000036" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 61.xml" itemID="6a3daa00-00000037" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 62.xml" itemID="6a3daa00-00000038" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 63.xml" itemID="6a3daa00-00000039" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 64.xml" itemID="6a3daa00-0000003a" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 65.xml" itemID="6a3daa00-0000003b" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 66.xml" itemID="6a3daa00-0000003c" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 67.xml" itemID="6a3daa00-0000003d" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 69.xml" itemID="6a3daa00-0000003e" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 70.xml" itemID="6a3daa00-0000003f" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 71.xml" itemID="6a3daa00-00000040" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 72.xml" itemID="6a3daa00-00000041" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 73.xml" itemID="6a3daa00-00000042" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 74.xml" itemID="6a3daa00-00000043" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 75.xml" itemID="6a3daa00-00000044" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 77.xml" itemID="6a3daa00-00000045" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 78.xml" itemID="6a3daa00-00000046" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 79.xml" itemID="6a3daa00-00000047" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 81.xml" itemID="6a3daa00-00000048" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 82.xml" itemID="6a3daa00-00000049" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 85.xml" itemID="6a3daa00-0000004a" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 90.xml" itemID="6a3daa00-0000004b" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 91.xml" itemID="6a3daa00-0000004c" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 92.xml" itemID="6a3daa00-0000004d" itemIcon="0" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 93.xml" itemID="6a3daa00-0000004e" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 94.xml" itemID="6a3daa00-0000004f" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 95.xml" itemID="6a3daa00-00000050" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 96.xml" itemID="6a3daa00-00000051" itemIcon="1" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 97.xml" itemID="6a3daa00-00000052" itemIcon="0" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 98.xml" itemID="6a3daa00-00000053" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 103.xml" itemID="6a3daa00-00000054" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 104.xml" itemID="6a3daa00-00000055" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 105.xml" itemID="6a3daa00-00000056" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 106.xml" itemID="6a3daa00-00000057" itemIcon="0" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 109.xml" itemID="6a3daa00-00000058" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 110.xml" itemID="6a3daa00-00000059" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 112.xml" itemID="6a3daa00-0000005a" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 113.xml" itemID="6a3daa00-0000005b" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 114.xml" itemID="6a3daa00-0000005c" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 115.xml" itemID="6a3daa00-0000005d" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 116.xml" itemID="6a3daa00-0000005e" loadImmediate="false" lastModified="1782426083"/>
+          <Include href="Symbol 117.xml" itemID="6a3daa00-0000005f" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 119.xml" itemID="6a3daa00-00000060" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 121.xml" itemID="6a3daa00-00000061" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 123.xml" itemID="6a3daa00-00000062" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 124.xml" itemID="6a3daa00-00000063" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 125.xml" itemID="6a3daa00-00000064" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 126.xml" itemID="6a3daa00-00000065" itemIcon="0" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 127.xml" itemID="6a3daa00-00000066" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 128.xml" itemID="6a3daa00-00000067" itemIcon="0" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 129.xml" itemID="6a3daa00-00000068" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 130.xml" itemID="6a3daa00-00000069" itemIcon="0" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 131.xml" itemID="6a3daa00-0000006a" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 133.xml" itemID="6a3daa00-0000006b" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 135.xml" itemID="6a3daa00-0000006c" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 136.xml" itemID="6a3daa00-0000006d" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 139.xml" itemID="6a3daa00-0000006e" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 140.xml" itemID="6a3daa00-0000006f" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 141.xml" itemID="6a3daa00-00000070" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 142.xml" itemID="6a3daa00-00000071" itemIcon="0" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 143.xml" itemID="6a3daa00-00000072" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 144.xml" itemID="6a3daa00-00000073" itemIcon="0" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 145.xml" itemID="6a3daa00-00000074" itemIcon="0" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 147.xml" itemID="6a3daa00-00000075" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 149.xml" itemID="6a3daa00-00000076" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 150.xml" itemID="6a3daa00-00000077" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+          <Include href="Symbol 151.xml" itemID="6a3daa00-00000078" itemIcon="1" loadImmediate="false" lastModified="1782426084"/>
+     </symbols>
+     <timelines>
+          <DOMTimeline name="Scene 1">
+               <layers>
+                    <DOMLayer name="Labels Layer" color="#bbcb74">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728" name="theInfMc" labelType="name">
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Script Layer" color="#8254ff">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script>function LoadXmlData()
+{
+   my_lb.removeAll();
+   ListOfSongs.splice(0);
+   Mp3XML.onLoad = function(success)
+   {
+      if(success)
+      {
+         clearInterval(pollingxml);
+         errorScrn1.removeMovieClip();
+         child = Mp3XML.firstChild.childNodes;
+         i = 0;
+         while(i &lt; child.length)
+         {
+            my_lb.addItem(String(child[i].firstChild.nodeValue));
+            ListOfSongs.push(String(child[i].firstChild.nodeValue));
+            i++;
+         }
+         my_lb.setSelectedIndex(0);
+         lastItem = my_lb.getLength();
+      }
+      else if(ErrorFlag != "on")
+      {
+         attachMovie("errorScrn","errorScrn1",12);
+         errorScrn1._x = 39;
+         errorScrn1._y = 31;
+         errorScrn1.EerScren.text = "Place your mp3\'s in the mp3 folder and click here.";
+         ErrorFlag = "on";
+      }
+   };
+   Mp3XML.load("mp3/music.xml");
+}
+function firstlist()
+{
+   errorScrn1.EerScren.text = "Please wait..";
+   fscommand("exec","MP3manager.exe");
+   pollingxml = setInterval(function()
+   {
+      LoadXmlData();
+   }
+   ,2000);
+}
+function playSong()
+{
+   MP3Sound.loadSound("mp3/" + my_lb.getSelectedItem().label,false);
+   MP3Sound.setVolume(_root.MP3Vol);
+   SongListNum = my_lb.getSelectedIndex();
+   _root.nameofSong = my_lb.getItemAt(SongListNum).label;
+   my_lb.setSelectedIndex(SongListNum);
+   my_lb.setScrollPosition(SongListNum);
+   SetSlider();
+   this.createEmptyMovieClip("temp5",7);
+   temp5.onEnterFrame = function()
+   {
+      bytesLoaded = MP3Sound.getBytesLoaded();
+      bytesTotal = MP3Sound.getBytesTotal();
+      percentLoaded = Math.round(100 * bytesLoaded / bytesTotal);
+      if(percentLoaded &gt; 1)
+      {
+         loadinInf = Number(percentLoaded) + "%";
+      }
+      else
+      {
+         loadinInf = 0;
+      }
+      if(bytesLoaded == bytesTotal &amp;&amp; MP3Sound.duration &gt; 0)
+      {
+         MP3Sound.start();
+         unloadMovie(this);
+      }
+   };
+}
+function stopSong()
+{
+   stopAllSounds();
+   delete temp22.onEnterFrame;
+}
+function playNextSong()
+{
+   if(SongPlayMode == "Random")
+   {
+      endRandNum = lastItem;
+      RandNum = random(endRandNum);
+      RandNum = Math.ceil(RandNum);
+      SongListNum = RandNum;
+   }
+   else
+   {
+      SongListNum += 1;
+   }
+   if(SongListNum &gt; lastItem - 1)
+   {
+      SongListNum = 0;
+   }
+   SetSlider();
+   _root.nameofSong = my_lb.getItemAt(SongListNum).label;
+   my_lb.setSelectedIndex(SongListNum);
+   my_lb.setScrollPosition(SongListNum);
+   ticker();
+   MP3Sound.loadSound("mp3/" + _root.nameofSong,true);
+   MP3Sound.setVolume(_root.MP3Vol);
+   this.createEmptyMovieClip("temp5",7);
+   temp5.onEnterFrame = function()
+   {
+      bytesLoaded = MP3Sound.getBytesLoaded();
+      bytesTotal = MP3Sound.getBytesTotal();
+      percentLoaded = Math.round(100 * bytesLoaded / bytesTotal);
+      if(percentLoaded &gt; 1)
+      {
+         loadinInf = Number(percentLoaded) + "%";
+      }
+      else
+      {
+         loadinInf = 0;
+      }
+      if(bytesLoaded == bytesTotal &amp;&amp; MP3Sound.duration &gt; 0)
+      {
+         MP3Sound.start();
+         SoundLoaded = 1;
+         unloadMovie(this);
+      }
+   };
+}
+function ToggleMode()
+{
+   if(SongPlayMode == "Random")
+   {
+      SongPlayMode = "Next";
+      _root.roundSym._visible = false;
+      _root.arrrSym._visible = true;
+   }
+   else
+   {
+      SongPlayMode = "Random";
+      _root.roundSym._visible = true;
+      _root.arrrSym._visible = false;
+   }
+   btnInf.text = "&gt;" + SongPlayMode;
+}
+function SetSlider()
+{
+   if(volFlag != "yes")
+   {
+      volumeSlider_MC.volINf = MP3Sound.getVolume();
+      volumeSlider_MC.theSlider._x = Math.ceil(volumeSlider_MC.volINf / 100 * 82);
+      volFlag = "yes";
+   }
+}
+function HowLoud()
+{
+   trace(MP3Sound.getVolume());
+}
+function ticker()
+{
+   if(MP3Sound.ID3.TIT2 == undefined)
+   {
+      tickerText = my_lb.getSelectedItem().label;
+   }
+   else
+   {
+      tickerText = MP3Sound.ID3.TIT2 + "   ::   " + MP3Sound.ID3.artist;
+   }
+   firstChar = 0;
+   lineLength = 50;
+   var _loc1_ = 0;
+   while(_loc1_ &lt; lineLength)
+   {
+      tickerText = " " + tickerText;
+      _loc1_ = _loc1_ + 1;
+   }
+   ViewTic(tickerText);
+}
+function ViewTic(Mp3name)
+{
+   this.createEmptyMovieClip("temp22",22);
+   temp22.onEnterFrame = function()
+   {
+      nowPlay.text = Mp3name.substr(firstChar,lineLength);
+      firstChar++;
+      if(firstChar &gt; tickerText.length)
+      {
+         firstChar = 0;
+      }
+   };
+}
+function gettheSongA()
+{
+   Apart = "";
+   LeftCount = _root.SongFind.length;
+   i = 0;
+   while(i &lt; _root.SongFind.length)
+   {
+      Apart += String(String(SongFind[i]));
+      i++;
+   }
+   gettheSongB(Apart);
+}
+function gettheSongB(fileA)
+{
+   i = 0;
+   while(i &lt; _root.ListOfSongs.length)
+   {
+      theSongNAme = String(_root.ListOfSongs[i]);
+      Bpart = String(_root.theSongNAme.substr(0,LeftCount));
+      Bpart = Bpart.toUpperCase();
+      if(fileA == Bpart)
+      {
+         my_lb.setSelectedIndex(i);
+         my_lb.setScrollPosition(i);
+         break;
+      }
+      i++;
+   }
+}
+function ClockTimer()
+{
+   nowtime = getTimer();
+   futuretime = nowtime + 2000;
+   this.createEmptyMovieClip("temp12",this.getNextHighestDepth());
+   temp12.onEnterFrame = function()
+   {
+      nowtime = getTimer();
+      if(nowtime &gt;= futuretime)
+      {
+         SongFind.splice(0,SongFind.length);
+         delete temp12.onEnterFrame;
+      }
+   };
+}
+function ToolTip(theitemname, thexpos, theypos)
+{
+   this.createEmptyMovieClip("theToolTipMc2",this.getNextHighestDepth());
+   theToolTipMc2.createTextField("tootipText",_root.theToolTipMc2.getNextHighestDepth(),6,3,100,50);
+   theToolTipMc2.Tip_fmt = new TextFormat();
+   theToolTipMc2.Tip_fmt.font = "_sans";
+   theToolTipMc2.tootipText.multiline = false;
+   theToolTipMc2.tootipText.selectable = false;
+   theToolTipMc2.tootipText.autoSize = true;
+   theToolTipMc2.tootipText.text = theitemname;
+   theToolTipMc2.tootipText.setTextFormat(theToolTipMc2.Tip_fmt);
+   BoxWidth = Number(theToolTipMc2.tootipText.textWidth + 12);
+   theToolTipMc2._x = -300;
+   theToolTipMc2._y = 35;
+   theToolTipMc2.beginFill(16776960);
+   theToolTipMc2.moveTo(5,5);
+   theToolTipMc2.lineTo(BoxWidth,5);
+   theToolTipMc2.lineTo(BoxWidth,20);
+   theToolTipMc2.lineTo(5,20);
+   theToolTipMc2.lineTo(5,5);
+   theToolTipMc2.endFill();
+   theToolTipMc2.lineStyle(1,0,100);
+   theToolTipMc2.moveTo(5,5);
+   theToolTipMc2.lineTo(BoxWidth,5);
+   theToolTipMc2.lineTo(BoxWidth,20);
+   theToolTipMc2.lineTo(5,20);
+   theToolTipMc2.lineTo(5,5);
+   MoveFromCue(thexpos,theypos);
+}
+function MoveFromCue(thexpos, theypos)
+{
+   thenowtime = getTimer();
+   thefuturetime = thenowtime + 3000;
+   this.createEmptyMovieClip("CueMc",143);
+   CueMc.onEnterFrame = function()
+   {
+      thenowtime = getTimer();
+      if(thenowtime &gt;= thefuturetime)
+      {
+         theToolTipMc2._x = thexpos;
+         theToolTipMc2._y = theypos;
+         CueMc.removeMovieClip();
+      }
+   };
+}
+function Cancel()
+{
+   CueMc.removeMovieClip();
+   theToolTipMc2.removeMovieClip();
+}
+this._lockroot = true;
+volumeSlider_MC.volINf = 0;
+songdetails = "No Tag Data";
+Mp3XML = new XML();
+NewXmldoc();
+incNum = 0;
+ListOfSongs = new Array();
+_root.roundSym._visible = false;
+SongPlayMode = "Next";
+MP3Sound = new Sound();
+TickerSong = "No Tag Data";
+MP3Vol = Number(100);
+Mp3XML.ignoreWhite = true;
+LoadXmlData();
+MP3Sound.onID3 = function()
+{
+   songdetails = "";
+   for(var _loc1_ in MP3Sound.ID3)
+   {
+      songdetails += _loc1_ + " : " + MP3Sound.ID3[_loc1_] + "\n";
+   }
+   ticker();
+};
+MP3Sound.onSoundComplete = function()
+{
+   playNextSong();
+};
+SongFind = new Array();
+my_lb.setStyleProperty("background",12770484);
+Selection.setFocus(my_lb);
+ReturnCall = new Object();
+ReturnCall.onKeyDown = function()
+{
+   Selection.setFocus(my_lb);
+   if(key.getCode() == 32)
+   {
+      playSong();
+   }
+   else if(key.getCode() == 39)
+   {
+      playNextSong();
+   }
+   else if(key.getCode() == 37)
+   {
+      ToggleMode();
+   }
+   else if(key.getCode() == 17)
+   {
+      stopSong();
+   }
+   else if(key.getCode() != 38)
+   {
+      if(key.getCode() != 40)
+      {
+         foo = String.fromCharCode(Key.getCode());
+         SongFind.push(foo);
+         gettheSongA();
+         ClockTimer();
+      }
+   }
+};
+Key.addListener(ReturnCall);
+var receiveConn = new LocalConnection();
+connectSuccess = receiveConn.connect("channelA");
+receiveConn.MessageSend = function(Mess_string)
+{
+   LoadXmlData();
+};
+</script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 3" color="#c9b2cf">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMShape isFloating="true">
+                                             <fills/>
+                                             <strokes>
+                                                  <StrokeStyle index="1">
+                                                       <SolidStroke scaleMode="normal" weight="1.5">
+                                                            <fill>
+                                                                 <SolidColor color="#666666"/>
+                                                            </fill>
+                                                       </SolidStroke>
+                                                  </StrokeStyle>
+                                             </strokes>
+                                             <edges>
+                                                  <Edge fillStyle0="0" fillStyle1="0" strokeStyle="1" edges="! 1455 2844[ 1544 2839 1609 2774[ 1679 2704 1680 2605[ 1679 2505 1609 2435[ 1539 2365 1440 2365| 1432 2365| 1423 2365| 536 2365| 522 2365| 520 2365[ 420 2365 350 2435[ 279 2505 280 2605[ 279 2704 350 2774[ 420 2844 520 2845| 522 2845| 1425 2844| 1455 2844| 1440 2845| 1425 2844"/>
+                                             </edges>
+                                        </DOMShape>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 4" color="#fa84fb">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 151" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="24.55" ty="125.25" a="0.05000000074505806" d="0.05000000074505806"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 5" color="#6ae967">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 150" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="0.0" ty="0.0"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 6" color="#a5f7a1">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 149" name="roundSym" centerPoint3DX="49.35" centerPoint3DY="129.1">
+                                             <matrix>
+                                                  <Matrix tx="41.55" ty="125.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 7" color="#2292db">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 147" name="arrrSym" centerPoint3DX="49.3" centerPoint3DY="130.2">
+                                             <matrix>
+                                                  <Matrix tx="42.6" ty="127.15"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 8" color="#416fd0">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 145" symbolType="button">
+                                             <matrix>
+                                                  <Matrix tx="39.6" ty="120.25"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script>on(rollOver){
+   _root.ToolTip("Next/Random &lt;LEFT ARROW&gt;",3,93);
+}
+on(rollOut){
+   _root.Cancel();
+}
+on(release){
+   _root.ToggleMode();
+}
+</script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 9" color="#e5318d">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 144" symbolType="button">
+                                             <matrix>
+                                                  <Matrix tx="16.8" ty="120.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script>on(rollOver){
+   _root.ToolTip("Get song info",3,93);
+}
+on(rollOut){
+   _root.Cancel();
+}
+on(release){
+   attachMovie("theInfMc","theInfMc",12);
+   theInfMc._x = 29;
+   theInfMc._y = 31;
+}
+</script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 10" color="#b35296">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 143" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="67.45" ty="125.35" a="0.05000000074505806" d="0.05000000074505806"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 11" color="#9f7396">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 142" symbolType="button">
+                                             <matrix>
+                                                  <Matrix tx="62.4" ty="120.4"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script>on(rollOver){
+   _root.ToolTip("Create new song list",32,93);
+}
+on(rollOut){
+   _root.Cancel();
+}
+on(release){
+   fscommand("exec","MP3manager.exe");
+   errorScrn1.removeMovieClip();
+}
+</script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 12" color="#e9f73a">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMDynamicText fontRenderingMode="device" name="nowPlay" width="137.7" height="11.4" isSelectable="false">
+                                             <matrix>
+                                                  <Matrix tx="16.55" ty="99.65" a="1.27020263671875" d="1.0"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters/>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="left" rotation="true" indent="0.0" leftMargin="0.0" lineSpacing="2.0" rightMargin="0.0" autoKern="false" size="0.0" bitmapSize="0" face="Arial" fillColor="#000000" alpha="1.0"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 13" color="#e967a4">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMDynamicText fontRenderingMode="device" width="23.7" height="11.4" isSelectable="false" variableName="loadinInf">
+                                             <matrix>
+                                                  <Matrix tx="204.25" ty="99.65" a="1.142852783203125" d="1.0"/>
+                                             </matrix>
+                                             <textRuns>
+                                                  <DOMTextRun>
+                                                       <characters/>
+                                                       <textAttrs>
+                                                            <DOMTextAttrs alignment="left" rotation="true" indent="0.0" leftMargin="0.0" lineSpacing="2.0" rightMargin="0.0" autoKern="false" size="0.0" bitmapSize="0" face="Arial" fillColor="#000000" alpha="1.0"/>
+                                                       </textAttrs>
+                                                  </DOMTextRun>
+                                             </textRuns>
+                                        </DOMDynamicText>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 14" color="#aa7eb7">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 136" centerPoint3DX="204.25" centerPoint3DY="86.3">
+                                             <matrix>
+                                                  <Matrix tx="174.45" ty="81.0"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 15" color="#87f04c">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 133" name="volumeSlider_MC" centerPoint3DX="188.55" centerPoint3DY="132.4">
+                                             <matrix>
+                                                  <Matrix tx="143.65" ty="127.1"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 16" color="#6be887">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 131" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="139.1" ty="77.9" a="0.05000000074505806" d="0.05000000074505806"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 17" color="#fb4f9a">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 130" symbolType="button">
+                                             <matrix>
+                                                  <Matrix tx="120.2" ty="73.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script>on(rollOver){
+   _root.ToolTip("Next song &lt;RIGHT ARROW&gt;",48,48);
+}
+on(rollOut){
+   _root.Cancel();
+}
+on(release){
+   stopAllSounds();
+   delete temp22.onEnterFrame;
+   playNextSong();
+}
+</script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 18" color="#97d768">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 129" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="85.9" ty="79.35" a="0.05000000074505806" d="0.05000000074505806"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 19" color="#b7f3a0">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 128" symbolType="button">
+                                             <matrix>
+                                                  <Matrix tx="66.7" ty="73.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script>on(rollOver){
+   _root.ToolTip("Stop &lt;Ctrl&gt;",50,48);
+}
+on(rollOut){
+   _root.Cancel();
+}
+on(release){
+   stopSong();
+}
+</script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 20" color="#21effb">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 127" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="33.35" ty="77.45" a="0.0340118408203125" d="0.0340118408203125"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 21" color="#5bfac0">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 126" symbolType="button">
+                                             <matrix>
+                                                  <Matrix tx="13.2" ty="73.65"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script>on(rollOver){
+   _root.ToolTip("Play &lt;SPACEBAR&gt;",3,48);
+}
+on(rollOut){
+   _root.Cancel();
+}
+on(release){
+   playSong();
+}
+</script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 22" color="#9b5194">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 124" name="my_lb" centerPoint3DX="63.2" centerPoint3DY="64.7">
+                                             <matrix>
+                                                  <Matrix tx="13.2" ty="12.2" a="2.25" d="0.5711669921875"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                             <Actionscript>
+                                                  <script>on(initialize){
+   selectMultiple = false;
+   changeHandler = "";
+}
+</script>
+                                             </Actionscript>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="Layer 23" color="#6371f4" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMSymbolInstance libraryItemName="Symbol 125" symbolType="graphic" loop="loop">
+                                             <matrix>
+                                                  <Matrix tx="0.0" ty="0.0" a="1.0001983642578125" d="1.0002899169921875"/>
+                                             </matrix>
+                                             <transformationPoint>
+                                                  <Point/>
+                                             </transformationPoint>
+                                        </DOMSymbolInstance>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+</DOMDocument>

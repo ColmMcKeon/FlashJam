@@ -1,0 +1,25 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Symbol 113" itemID="6a3daa00-0000005b" lastModified="1782426083" linkageIdentifier="FListItemSymbol" linkageExportForAS="true" linkageClassName="FListItemClass">
+     <timeline>
+          <DOMTimeline name="Symbol 113">
+               <layers>
+                    <DOMLayer name="Script Layer" color="#7d53cc">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script>#initclip
+function FListItemClass()
+{
+   this.init();
+}
+FListItemClass.prototype = new FSelectableItemClass();
+#endinitclip
+</script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timeline>
+</DOMSymbolItem>

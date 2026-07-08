@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Symbol 123" itemID="6a3daa00-00000062" lastModified="1782426084">
+     <timeline>
+          <DOMTimeline name="Symbol 123">
+               <layers>
+                    <DOMLayer name="Layer 1" color="#eae875" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMShape isFloating="true">
+                                             <fills>
+                                                  <FillStyle index="1">
+                                                       <SolidColor color="#d4d0d8"/>
+                                                  </FillStyle>
+                                             </fills>
+                                             <strokes/>
+                                             <edges>
+                                                  <Edge fillStyle0="1" fillStyle1="0" strokeStyle="0" edges="! 1656 -26| 1656 294| 1657 294| 1657 1628| 1656 1628| 1656 2071| 1976 2071| 1976 -26| 1656 -26"/>
+                                                  <Edge fillStyle0="1" fillStyle1="0" strokeStyle="0" edges="! 1956 -6| 1956 274| 1677 274| 1677 268| 1676 268| 1676 -6| 1956 -6"/>
+                                                  <Edge fillStyle0="1" fillStyle1="0" strokeStyle="0" edges="! 1879 164| 1820 96| 1816 95| 1813 96| 1753 164| 1753 165| 1752 168| 1757 173| 1875 173| 1880 168| 1879 164"/>
+                                                  <Edge fillStyle0="1" fillStyle1="0" strokeStyle="0" edges="! 1956 294| 1956 1628| 1955 1628| 1955 1751| 1677 1751| 1677 294| 1956 294"/>
+                                                  <Edge fillStyle0="1" fillStyle1="0" strokeStyle="0" edges="! 1752 1877| 1753 1881| 1812 1949| 1816 1950| 1819 1949| 1879 1881| 1879 1880| 1880 1877| 1875 1872| 1757 1872[ 1752 1872 1752 1877"/>
+                                                  <Edge fillStyle0="1" fillStyle1="0" strokeStyle="0" edges="! 1956 1771| 1956 2051| 1676 2051| 1676 1771| 1956 1771"/>
+                                             </edges>
+                                        </DOMShape>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timeline>
+</DOMSymbolItem>

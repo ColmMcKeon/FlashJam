@@ -1,0 +1,28 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Symbol 149" itemID="6a3daa00-00000076" lastModified="1782426084">
+     <timeline>
+          <DOMTimeline name="Symbol 149">
+               <layers>
+                    <DOMLayer name="Layer 1" color="#bb11c7" current="true" isSelected="true">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMShape isFloating="true">
+                                             <fills>
+                                                  <FillStyle index="1">
+                                                       <SolidColor color="#000000"/>
+                                                  </FillStyle>
+                                             </fills>
+                                             <strokes/>
+                                             <edges>
+                                                  <Edge fillStyle0="0" fillStyle1="1" strokeStyle="0" edges="! 297 56[ 312 70 313 91[ 312 111 297 125[ 282 138 260 139| 185 139| 185 115| 236 115[ 251 115 263 108[ 273 101 273 91[ 273 80 263 74[ 251 67 236 67| 229 67| 229 69| 229 85| 228 86| 176 54| 228 22| 229 22| 229 36| 229 43| 260 43[ 282 42 297 56"/>
+                                                  <Edge fillStyle0="0" fillStyle1="1" strokeStyle="0" edges="! 123 95| 173 128| 123 160| 123 139| 53 139[ 31 138 16 125[ 0 111 0 91[ 0 70 16 56[ 31 42 53 43| 147 43| 147 67| 76 67[ 60 67 50 74[ 38 80 38 91[ 38 101 50 108[ 60 115 76 115| 123 115| 123 95"/>
+                                             </edges>
+                                        </DOMShape>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timeline>
+</DOMSymbolItem>
