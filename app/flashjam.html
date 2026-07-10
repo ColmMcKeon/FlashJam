@@ -1279,7 +1279,7 @@ async function loadAndApplyTags(track) {
   const artist = currentTags?.artist || track.ext.toUpperCase();
   metaTitle.textContent  = title;
   metaArtist.textContent = artist;
-  track.tags = currentTags ? { title, artist, album: currentTags.album || null, genre: currentTags.genre || null, duration: currentTags.duration } : null;
+  track.tags = currentTags ? { title, artist, album: currentTags.album || null, genre: currentTags.genre || null, duration: currentTags.duration || null, track: currentTags.track || track.tags?.track || null, year: currentTags.year || track.tags?.year || null } : null;
   if (state.viewMode !== 'browse') renderQueue();
   if (infoPanel.classList.contains('open')) renderInfoPanel();
 
