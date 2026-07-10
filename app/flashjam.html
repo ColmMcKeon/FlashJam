@@ -1034,6 +1034,23 @@ const thumbClr = i => THUMBS[i % THUMBS.length];
 // ════════════════════════════════════════════════════
 //  RENDER QUEUE
 // ════════════════════════════════════════════════════
+function browseOrderIndices() {
+  const tree = buildTree();
+  const result = [];
+  Object.keys(tree).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })).forEach(artist => {
+    Object.keys(tree[artist]).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })).forEach(album => {
+      tree[artist][album]
+        .sort((a, b) => (parseInt(a.track.tags?.track) || 999) - (parseInt(b.track.tags?.track) || 999))
+        .forEach(({ idx }) => result.push(idx));
+    });
+  });
+  return result;
+}
+
+function activeOrder() {
+  return state.viewMode === 'browse' ? browseOrderIndices() : sortedIndices();
+}
+
 function sortedIndices() {
   let indices = state.playlist.map((_, i) => i);
   if (state.filterGenre) {
@@ -1355,9 +1372,8 @@ function pickShuffleNext() {
 function playNext() {
   if (!state.playlist.length) return;
   if (state.shuffle) { playTrack(pickShuffleNext()); return; }
-  const order = sortedIndices();
-  let pos = order.indexOf(state.currentIdx);
-  if (pos === -1) pos = -1; // will wrap to 0 below, which is fine
+  const order = activeOrder();
+  const pos = order.indexOf(state.currentIdx);
   playTrack(order[(pos + 1) % order.length]);
 }
 
@@ -1365,7 +1381,7 @@ function playPrev() {
   if (!state.playlist.length) return;
   if (mediaEl.currentTime > 3) { mediaEl.currentTime = 0; return; }
   if (state.shuffle) { playTrack(pickShuffleNext()); return; }
-  const order = sortedIndices();
+  const order = activeOrder();
   const pos = order.indexOf(state.currentIdx);
   playTrack(order[(pos <= 0 ? order.length : pos) - 1]);
 }
