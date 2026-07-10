@@ -1035,16 +1035,22 @@ const thumbClr = i => THUMBS[i % THUMBS.length];
 //  RENDER QUEUE
 // ════════════════════════════════════════════════════
 function browseOrderIndices() {
-  const tree = buildTree();
-  const result = [];
-  Object.keys(tree).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })).forEach(artist => {
-    Object.keys(tree[artist]).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })).forEach(album => {
-      tree[artist][album]
-        .sort((a, b) => (parseInt(a.track.tags?.track) || 999) - (parseInt(b.track.tags?.track) || 999))
-        .forEach(({ idx }) => result.push(idx));
-    });
+  // Build a flat ordered list matching exactly what renderBrowse displays:
+  // artists A→Z, albums A→Z within artist, songs by track number within album
+  const sorted = state.playlist.map((t, i) => ({
+    idx: i,
+    artist: (t.tags?.artist || 'Unknown Artist').toLowerCase(),
+    album:  t.tags?.album  || 'Unknown Album',
+    trackNum: parseInt(t.tags?.track) || 999,
+  }));
+  sorted.sort((a, b) => {
+    const ac = a.artist.localeCompare(b.artist, undefined, { sensitivity: 'base' });
+    if (ac !== 0) return ac;
+    const bc2 = a.album.localeCompare(b.album, undefined, { sensitivity: 'base' });
+    if (bc2 !== 0) return bc2;
+    return a.trackNum - b.trackNum;
   });
-  return result;
+  return sorted.map(s => s.idx);
 }
 
 function activeOrder() {
