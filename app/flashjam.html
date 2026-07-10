@@ -1274,7 +1274,7 @@ async function loadAndApplyTags(track) {
   metaTitle.textContent  = title;
   metaArtist.textContent = artist;
   track.tags = currentTags ? { title, artist, album: currentTags.album || null, genre: currentTags.genre || null, duration: currentTags.duration } : null;
-  renderView();
+  if (state.viewMode !== 'browse') renderQueue();
   if (infoPanel.classList.contains('open')) renderInfoPanel();
 
   // Load album art
