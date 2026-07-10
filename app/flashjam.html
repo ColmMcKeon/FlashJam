@@ -1500,12 +1500,14 @@ mediaEl.addEventListener('timeupdate', () => {
 });
 mediaEl.addEventListener('ended', () => { if (isCrossfading) completeCrossfade(); else playNext(); });
 mediaEl.addEventListener('pause', () => {
-  state.isPlaying = false; stopViz(false); updatePlayBtn(); renderView();
+  state.isPlaying = false; stopViz(false); updatePlayBtn();
+  if (state.viewMode !== 'browse') renderQueue();
 });
 mediaEl.addEventListener('play', () => {
   state.isPlaying = true;
   if (state.currentIdx >= 0 && !isVideo(state.playlist[state.currentIdx]?.ext)) startViz();
-  updatePlayBtn(); renderView();
+  updatePlayBtn();
+  if (state.viewMode !== 'browse') renderQueue();
 });
 
 progressTrack.addEventListener('click', e => {
