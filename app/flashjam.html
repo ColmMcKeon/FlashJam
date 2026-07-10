@@ -1342,7 +1342,17 @@ function playTrack(idx) {
   mediaEl.play().then(() => {
     state.isPlaying = true;
     if (!vid) startViz();
-    updatePlayBtn(); renderView(); scrollToPlaying(); saveData();
+    updatePlayBtn();
+    if (state.viewMode === 'browse') {
+      // update highlights in-place — don't rebuild the tree
+      document.querySelectorAll('.br-song-row').forEach(el => {
+        el.classList.toggle('playing', parseInt(el.dataset.index) === idx);
+      });
+      document.querySelector(`.br-song-row[data-index="${idx}"]`)?.scrollIntoView({ block: 'nearest' });
+    } else {
+      renderQueue(); scrollToPlaying();
+    }
+    saveData();
   }).catch(console.error);
 
   loadAndApplyTags(t);
@@ -1988,6 +1998,7 @@ function renderBrowse() {
       const songsEl = document.createElement('div');
       songsEl.className = 'br-songs';
 
+      songs.sort((a, b) => (parseInt(a.track.tags?.track) || 999) - (parseInt(b.track.tags?.track) || 999));
       songs.forEach(({ idx, track }, pos) => {
         const trackNum = track.tags?.track ? parseInt(track.tags.track) : pos + 1;
         const title    = track.tags?.title || nameOf(track.path);
