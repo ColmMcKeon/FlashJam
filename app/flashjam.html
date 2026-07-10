@@ -1339,21 +1339,35 @@ function togglePlay() {
   } else { mediaEl.pause(); }
 }
 
+// Shuffle history — tracks played this session; resets when all songs exhausted
+let shufflePlayed = new Set();
+
+function pickShuffleNext() {
+  const all = state.playlist.map((_, i) => i);
+  const remaining = all.filter(i => !shufflePlayed.has(i) && i !== state.currentIdx);
+  if (!remaining.length) { shufflePlayed.clear(); }
+  const pool = remaining.length ? remaining : all.filter(i => i !== state.currentIdx);
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  shufflePlayed.add(pick);
+  return pick;
+}
+
 function playNext() {
   if (!state.playlist.length) return;
-  if (state.shuffle) { playTrack(Math.floor(Math.random() * state.playlist.length)); return; }
+  if (state.shuffle) { playTrack(pickShuffleNext()); return; }
   const order = sortedIndices();
-  const pos = order.indexOf(state.currentIdx);
+  let pos = order.indexOf(state.currentIdx);
+  if (pos === -1) pos = -1; // will wrap to 0 below, which is fine
   playTrack(order[(pos + 1) % order.length]);
 }
 
 function playPrev() {
   if (!state.playlist.length) return;
   if (mediaEl.currentTime > 3) { mediaEl.currentTime = 0; return; }
-  if (state.shuffle) { playTrack(Math.floor(Math.random() * state.playlist.length)); return; }
+  if (state.shuffle) { playTrack(pickShuffleNext()); return; }
   const order = sortedIndices();
   const pos = order.indexOf(state.currentIdx);
-  playTrack(order[(pos - 1 + order.length) % order.length]);
+  playTrack(order[(pos <= 0 ? order.length : pos) - 1]);
 }
 
 function updatePlayBtn() { playBtn.textContent = state.isPlaying ? '⏸' : '▶'; updateMiniPlayer(); }
@@ -2103,7 +2117,7 @@ launchDropZone.addEventListener('drop', async e => {
 
 // "Change Playlist" button wired to queue header (added below)
 document.getElementById('btn-add').insertAdjacentHTML('afterend',
-  '<button class="q-btn" id="btn-switch" title="Switch playlist" style="font-size:15px;">⌂</button>'
+  '<button class="q-btn" id="btn-switch" title="Switch playlist"><svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.5"/><rect x="9" y="1" width="6" height="6" rx="1.5"/><rect x="1" y="9" width="6" height="6" rx="1.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/></svg></button>'
 );
 document.getElementById('btn-switch').addEventListener('click', showLauncher);
 
