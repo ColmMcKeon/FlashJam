@@ -5,7 +5,12 @@ const os   = require('os');
 let mm = null;
 import('music-metadata').then(mod => { mm = mod; }).catch(() => {});
 
-const DATA_DIR = path.join(os.homedir(), 'Library', 'CloudStorage', 'OneDrive-Adobe', 'Work', 'Development', 'claude-workspace', 'FlashJam', 'data');
+// Dev: app/../data  |  Packaged: Colm's OneDrive library if present, else Documents/Electron App Data/FlashJam/data
+const WORKSPACE_DATA = path.join(os.homedir(), 'Library', 'CloudStorage', 'OneDrive-Adobe', 'Work', 'Development', 'claude-workspace', 'FlashJam', 'data');
+const SHARED_APP_DATA = path.join(app.getPath('documents'), 'Electron App Data', 'FlashJam', 'data');
+const DATA_DIR = !app.isPackaged
+  ? path.join(__dirname, '..', 'data')
+  : fs.existsSync(WORKSPACE_DATA) ? WORKSPACE_DATA : SHARED_APP_DATA;
 
 let mainWindow   = null;
 let currentFile  = null; // active playlist file path
