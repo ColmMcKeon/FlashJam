@@ -2,6 +2,14 @@
 
 A modern macOS music and video player — a recreation of the original Flash MP3 player, built with Electron.
 
+## Tech Stack
+
+- **Framework:** Electron
+- **Language:** JavaScript/HTML/CSS
+- **Audio:** Web Audio API + Howler.js (or native)
+- **Build:** electron-packager
+- **Platform:** macOS (Apple Silicon)
+
 ## Features
 
 - **Drag & drop** — Add music and video files by dragging into the player
